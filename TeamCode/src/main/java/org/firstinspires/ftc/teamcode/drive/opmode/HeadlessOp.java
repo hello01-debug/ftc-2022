@@ -77,12 +77,12 @@ public class HeadlessOp extends OpMode {
 */
         // another attempt at making sense of this headless stuff
         // basically splitting apart everything into basic x and y again, but with direction, then doing it like normal? idk man it's 3am and i'm confused
-        final double y_proc = speed * Math.sin(direction);
-        final double x_proc = speed * Math.cos(direction);
+        final double y_proc = -1 * speed * Math.sin(direction + Math.PI / 2.0);
+        final double x_proc = speed * Math.cos(direction + Math.PI / 2.0);
 
         final double leftFront = y_proc + x_proc + rotation;
-        final double leftRear = y_proc - x_proc + rotation;
-        final double rightFront = y_proc - x_proc - rotation;
+        final double leftRear = y_proc - x_proc - rotation;
+        final double rightFront = y_proc - x_proc + rotation;
         final double rightRear = y_proc + x_proc - rotation;
 
         robot.setMotors(leftFront, rightFront, leftRear, rightRear);
