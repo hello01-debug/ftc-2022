@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -22,7 +23,9 @@ public class Robot {
     private final Telemetry telemetry;
 
     private final DcMotor leftFront, leftRear, rightFront, rightRear;
+    private final DcMotor slideLeft, slideRight, slideTop;
     private final BNO055IMU imu;
+    private final Servo gripServo;
 
     private double headingOffset = 0.0;
     private Orientation angles;
@@ -50,6 +53,17 @@ public class Robot {
         parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
+
+        slideLeft = hardwareMap.dcMotor.get("slideLeft");
+        slideRight = hardwareMap.dcMotor.get("slideRight");
+        slideTop = hardwareMap.dcMotor.get("slideTop");
+
+        // One of the slide motors MUST be reversed or teh two motors will fight each other
+        slideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        gripServo = hardwareMap.servo.get("gripServo");
     }
 
     private void setMotorMode(DcMotor.RunMode mode, DcMotor... motors) {
@@ -58,12 +72,27 @@ public class Robot {
         }
     }
 
+    // TODO: add slide motors to this function once we have the encoders physically connected
     public void runUsingEncoders() {
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER, leftFront, leftRear, rightFront, rightRear);
     }
 
     public void runWithoutEncoders() {
         setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER, leftFront, leftRear, rightFront, rightRear);
+    }
+
+    private void setBrake(DcMotor.ZeroPowerBehavior mode, DcMotor... motors) {
+        for (DcMotor motor : motors) {
+            motor.setZeroPowerBehavior(mode);
+        }
+    }
+
+    public void runWithBrakes() {
+        setBrake(DcMotor.ZeroPowerBehavior.BRAKE, leftFront, leftRear, rightFront, rightRear);
+    }
+
+    public void runWithoutBrakes() {
+        setBrake(DcMotor.ZeroPowerBehavior.FLOAT, leftFront, leftRear, rightFront, rightRear);
     }
 
     /**
@@ -144,5 +173,12 @@ public class Robot {
         leftRear.setPower(_leftRear / scale);
         rightFront.setPower(_rightFront / scale);
         rightRear.setPower(_rightRear / scale);
+    }
+
+    public void setSlideMotors(double _slideLeft, double _slideRight, double _slideTop, double _gripServo) {
+        slideLeft.setPower(_slideLeft);
+        slideRight.setPower(_slideRight);
+        slideTop.setPower(_slideTop);
+        gripServo.setPosition(_gripServo);
     }
 }
