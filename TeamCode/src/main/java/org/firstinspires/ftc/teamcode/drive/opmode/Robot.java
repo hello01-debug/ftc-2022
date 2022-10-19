@@ -25,7 +25,7 @@ public class Robot {
     private final DcMotor leftFront, leftRear, rightFront, rightRear;
     private final DcMotor slideLeft, slideRight, slideTop;
     private final BNO055IMU imu;
-    private final Servo gripServo;
+    private final Servo leftGripServo, rightGripServo;
 
     private double headingOffset = 0.0;
     private Orientation angles;
@@ -63,7 +63,8 @@ public class Robot {
 
         slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        gripServo = hardwareMap.servo.get("gripServo");
+        leftGripServo = hardwareMap.servo.get("leftGripServo");
+        rightGripServo = hardwareMap.servo.get("rightGripServo");
     }
 
     private void setMotorMode(DcMotor.RunMode mode, DcMotor... motors) {
@@ -71,8 +72,7 @@ public class Robot {
             motor.setMode(mode);
         }
     }
-
-    // TODO: add slide motors to this function once we have the encoders physically connected
+    
     public void runUsingEncoders() {
         setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER, leftFront, leftRear, rightFront, rightRear);
     }
@@ -175,10 +175,22 @@ public class Robot {
         rightRear.setPower(_rightRear / scale);
     }
 
-    public void setSlideMotors(double _slideLeft, double _slideRight, double _slideTop, double _gripServo) {
+    public void setSlideMotors(double _slideLeft, double _slideRight, double _slideTop) {
         slideLeft.setPower(_slideLeft);
         slideRight.setPower(_slideRight);
         slideTop.setPower(_slideTop);
-        gripServo.setPosition(_gripServo);
+    }
+
+    public void setGrip(double gripPower, boolean stowed) {
+        double leftPos = ((-1 * gripPower + 1) / 3) + 5.0/9;
+        double rightPos = (gripPower / 3) + 2.0/3;
+
+        if (stowed) {
+            leftGripServo.setPosition(1);
+            rightGripServo.setPosition(0);
+        } else {
+            leftGripServo.setPosition(leftPos);
+            rightGripServo.setPosition(rightPos);
+        }
     }
 }
