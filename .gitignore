@@ -89,3 +89,4 @@ lint/tmp/
 .DS_Store
 .idea
 TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/opmode/clawTest.java
+java_pid12180.hprof

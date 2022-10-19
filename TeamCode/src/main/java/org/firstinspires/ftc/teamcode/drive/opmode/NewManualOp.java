@@ -84,7 +84,7 @@ public class NewManualOp extends OpMode {
 
         final double slideLeft = vert;
         final double slideRight = vert;
-        final double slideTop = -1 * Math.pow(controller2.right_stick_x, powerCurve);
+        final double slideTop = -1 * Math.pow(controller2.right_stick_y, powerCurve);
         final double gripPower = Math.pow(grip, powerCurve);
 
         robot.setSlideMotors(slideLeft, slideRight, slideTop);
