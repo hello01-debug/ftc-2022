@@ -14,6 +14,7 @@ public class NewManualOp extends OpMode {
     private boolean gripperStowed = true;
     private double grip = 0;
 
+    @Override
     public void init() {
         robot = new Robot(hardwareMap, telemetry);
         //TODO: turn encoders back on
@@ -23,6 +24,7 @@ public class NewManualOp extends OpMode {
         controller2 = new Controller(gamepad2);
     }
 
+    @Override
     public void init_loop() {
         // Check for controller updates
         controller1.update();
@@ -38,6 +40,7 @@ public class NewManualOp extends OpMode {
         telemetry.addData("Cubic acceleration: ", cubicAccel ? "yes" : "no");
     }
 
+    @Override
     public void loop() {
         // We aren't using the heading features of the robot in this opmode, so we only need to update the controllers
         controller1.update();
@@ -86,6 +89,5 @@ public class NewManualOp extends OpMode {
 
         robot.setSlideMotors(slideLeft, slideRight, slideTop);
         robot.setGrip(gripPower, gripperStowed);
-
     }
 }
