@@ -2,9 +2,15 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+/*
+    This class defines some useful functions for the controller
+    It is basically a wrapper for the generic gamepad access
+ */
 public class Controller {
+    // Create a gamepad object
     private Gamepad gamepad;
 
+    // Create variables to hold the state of each button and analog input
     private int dpad_up, dpad_down, dpad_left, dpad_right;
     private int square, triangle, cross, circle;
     private int left_bumper, right_bumper;
@@ -12,10 +18,13 @@ public class Controller {
     public double left_stick_x, right_stick_x, left_stick_y, right_stick_y;
     public double left_trigger, right_trigger;
 
+    // Idk what this does but it's supposed to be here for something
     public Controller(Gamepad g) {
         gamepad = g;
     }
 
+    // When the opmode calls this function, all of the variables will be updated (usually once per opmode loop)
+    // If a button is pressed on a certain loop, increment that value, if it is not pressed reset that value to 0
     public void update() {
         if (gamepad.square) {
             ++square;
@@ -76,6 +85,7 @@ public class Controller {
         right_trigger = gamepad.right_trigger;
     }
 
+    // These function will return true whenever the value of a button is greater than 0, false otherwise
     public boolean dpadUp() {
         return 0 < dpad_up;
     }
@@ -116,6 +126,8 @@ public class Controller {
         return 0 < right_bumper;
     }
 
+    // These functions debounce the button (if the button is held for a long time it will not count as multiple presses)
+    // They only return true if the value of a button is equal to 1
     public boolean dpadUpOnce() {
         return 1 == dpad_up;
     }
