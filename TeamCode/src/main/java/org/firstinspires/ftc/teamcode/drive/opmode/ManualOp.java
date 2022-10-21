@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Disabled
 @TeleOp(name = "DEPRECATED, DOES NOT WORK - Manual Op")
 public class ManualOp extends OpMode {
     DcMotor leftFront;

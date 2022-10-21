@@ -21,6 +21,7 @@ public class NewManualOp extends OpMode {
         // Basic setup
         robot = new Robot(hardwareMap, telemetry);
         robot.runUsingEncoders();
+        robot.runSlideWithoutEncoders();
         controller1 = new Controller(gamepad1);
         controller2 = new Controller(gamepad2);
     }

@@ -97,6 +97,16 @@ public class Robot {
         setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER, leftFront, leftRear, rightFront, rightRear);
     }
 
+    // Invoke setMotorMode() to turn on slide encoders
+    public void runSlideUsingEncoders() {
+        setMotorMode(DcMotor.RunMode.RUN_USING_ENCODER, slideLeft, slideRight);
+    }
+
+    // Invoke setMotorMode() to turn on slide encoders
+    public void runSlideWithoutEncoders() {
+        setMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER, slideLeft, slideRight);
+    }
+
     // Does the same thing as setMotorMode(), just with a zeroPowerMode
     private void setBrake(DcMotor.ZeroPowerBehavior mode, DcMotor... motors) {
         for (DcMotor motor : motors) {
