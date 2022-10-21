@@ -16,6 +16,7 @@ public class NewManualOp extends OpMode {
     private double grip = 0;                // Controls how far open and closed the gripper is
     private double multiplier = 0.75;       // Allows us to slow down the motor speed
 
+    @Override
     public void init() {
         // Basic setup
         robot = new Robot(hardwareMap, telemetry);
@@ -24,6 +25,7 @@ public class NewManualOp extends OpMode {
         controller2 = new Controller(gamepad2);
     }
 
+    @Override
     public void init_loop() {
         // Check for controller updates
         controller2.update();
@@ -34,6 +36,7 @@ public class NewManualOp extends OpMode {
         }
     }
 
+    @Override
     public void loop() {
         // We aren't using the heading features of the robot in this opmode, so we only need to update the controllers
         // This way we can save computational resources
@@ -87,6 +90,5 @@ public class NewManualOp extends OpMode {
 
         robot.setSlideMotors(slideLeft, slideRight, slideTop);
         robot.setGrip(gripPower, gripperStowed);
-
     }
 }
