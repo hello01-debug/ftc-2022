@@ -124,7 +124,7 @@ public class Robot {
         setBrake(DcMotor.ZeroPowerBehavior.FLOAT, leftFront, leftRear, rightFront, rightRear);
     }
 
-    // Return true fi the gyro is calibrated
+    // Return true if the gyro is calibrated
     public boolean isGyroCalibrated() {
         return imu.isGyroCalibrated();
     }
