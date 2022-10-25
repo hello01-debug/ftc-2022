@@ -10,17 +10,19 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Config
 @Autonomous(group = "Competition")
-public class BasicAutonomous extends LinearOpMode {
-    public static int DISTANCE = 36;
+public class BasicAutonomousMoveLeft extends LinearOpMode {
+    public static int DISTANCE = 22;
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Trajectory forward = drive.trajectoryBuilder(new Pose2d()).forward(DISTANCE).build();
+        Trajectory left = drive.trajectoryBuilder(new Pose2d()).strafeLeft(5).build();
 
         waitForStart();
 
+        drive.followTrajectory(left);
         drive.followTrajectory(forward);
     }
 }

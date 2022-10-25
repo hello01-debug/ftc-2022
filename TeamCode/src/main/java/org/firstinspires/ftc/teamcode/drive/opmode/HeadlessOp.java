@@ -76,7 +76,7 @@ public class HeadlessOp extends OpMode {
 
         // Change multiplier when base driver presses circle
         if (controller1.circleOnce()) {
-            multiplier = multiplier == 0.75 ? 0.10 : 0.75;
+            multiplier = multiplier == 0.75 ? 0.25 : 0.75;
         }
 
         // Toggle gripper stowing when arm driver presses cross
