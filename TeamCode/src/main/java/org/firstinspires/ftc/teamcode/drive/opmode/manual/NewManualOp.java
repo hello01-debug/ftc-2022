@@ -1,9 +1,12 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.drive.opmode.manual;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.drive.opmode.Controller;
+import org.firstinspires.ftc.teamcode.drive.opmode.Robot;
 
 @TeleOp(name = "Manual Op")
 public class NewManualOp extends OpMode {
