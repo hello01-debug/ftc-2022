@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Config
 @Autonomous(group = "Competition")
-public class BasicAutonomousMoveLeft extends LinearOpMode {
+public class BasicAutonomousMoveRight extends LinearOpMode {
     public static int DISTANCE = 22;
 
     @Override
@@ -18,11 +18,11 @@ public class BasicAutonomousMoveLeft extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Trajectory forward = drive.trajectoryBuilder(new Pose2d()).forward(DISTANCE).build();
-        Trajectory left = drive.trajectoryBuilder(new Pose2d()).strafeLeft(5).build();
+        Trajectory right = drive.trajectoryBuilder(new Pose2d()).strafeRight(5.5).build();
 
         waitForStart();
 
-        drive.followTrajectory(left);
+        drive.followTrajectory(right);
         drive.followTrajectory(forward);
     }
 }
