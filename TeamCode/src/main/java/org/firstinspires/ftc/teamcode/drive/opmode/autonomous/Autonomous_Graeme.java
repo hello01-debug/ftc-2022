@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Config
-@Autonomous(group = "drive")
+@Autonomous(group = "drive1")
 public class Autonomous_Graeme extends LinearOpMode {
 
     @Override
