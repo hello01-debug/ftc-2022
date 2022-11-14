@@ -67,7 +67,7 @@ public class Robot {
         slideTop = hardwareMap.dcMotor.get("slideTop");
 
         // One of the slide motors MUST be reversed or teh two motors will fight each other
-        slideRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Tell the slide motors to brake whenever we don't give any input
         // This helps hold the slide still and reduce the workload on the arm driver
@@ -202,7 +202,8 @@ public class Robot {
 
     // gripPower takes the position of the gripper from 0 to 1 (0 is open, 1 is closed)
     // The stowed variable pulls the grippers further back than normal operation, needs to be calibrated better
-    public void setGrip(double gripPower, boolean stowed) {
+    public void setGrip(boolean grip, boolean stowed) {
+        double gripPower = grip ? 0 : 1;
         double leftPos = ((-1 * gripPower + 1) / 3) + 5.0/9;
         double rightPos = (gripPower / 3) + 2.0/3;
 

@@ -16,8 +16,8 @@ public class NewManualOp extends OpMode {
 
     // Set up some useful variables
     private boolean gripperStowed = false;  // Boolean that stows the gripper
-    private double grip = 0;                // Controls how far open and closed the gripper is
-    private double multiplier = 0.75;       // Allows us to slow down the motor speed
+    private boolean grip = false;                // Controls how far open and closed the gripper is
+    private double multiplier = 1.0;       // Allows us to slow down the motor speed
 
     @Override
     public void init() {
@@ -49,7 +49,7 @@ public class NewManualOp extends OpMode {
 
         // Change multiplier when base driver presses circle
         if (controller1.circleOnce()) {
-            multiplier = multiplier == 0.75 ? 0.25 : 0.75;
+            multiplier = multiplier == 1.0 ? 0.25 : 1.0;
         }
 
         // Stow and unstow the gripper
@@ -59,10 +59,10 @@ public class NewManualOp extends OpMode {
 
         // Open and close the gripper when the bumpers are pressed
         if (controller2.leftBumperOnce()) {
-            grip = 0;
+            grip = false;
         }
         if (controller2.rightBumperOnce()) {
-            grip = 1;
+            grip = true;
         }
 
         // Taking the input to the third power gives greater resolution at low input values without sacrificing range
@@ -90,7 +90,7 @@ public class NewManualOp extends OpMode {
         final double slideLeft = vert;
         final double slideRight = vert;
         final double slideTop = Math.pow(controller2.right_stick_y, 3.0);
-        final double gripPower = grip;
+        final boolean gripPower = grip;
 
         robot.setSlideMotors(slideLeft, slideRight, slideTop);
         robot.setGrip(gripPower, gripperStowed);

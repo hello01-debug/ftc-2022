@@ -24,8 +24,8 @@ public class HeadlessOp extends OpMode {
     private boolean headlessMode = false;   // Allows us to toggle headless mode on and off
     private int gyroCalibratedCount = 0;    // I don't know what this actually does
     private boolean gripperStowed = false;  // Allows use to stow and unstow the gripper
-    private double grip = 0;                // Controls how far open or closed the gripper is
-    private double multiplier = 0.75;       // Allows us to slow down the motor speed
+    private boolean grip = false;                // Controls how far open or closed the gripper is
+    private double multiplier = 1.0;       // Allows us to slow down the motor speed
 
     @Override
     public void init() {
@@ -79,7 +79,7 @@ public class HeadlessOp extends OpMode {
 
         // Change multiplier when base driver presses circle
         if (controller1.circleOnce()) {
-            multiplier = multiplier == 0.75 ? 0.25 : 0.75;
+            multiplier = multiplier == 1.0 ? 0.25 : 1.0;
         }
 
         // Toggle gripper stowing when arm driver presses cross
@@ -89,11 +89,11 @@ public class HeadlessOp extends OpMode {
 
         // Set grippers to open when the left bumper is pressed
         if (controller2.leftBumperOnce()) {
-            grip = 0;
+            grip = false;
         }
         // Set grippers to close when the right bumper is pressed
         if (controller2.rightBumperOnce()) {
-            grip = 1;
+            grip = true;
         }
 
         // Add telemetry for convenience
@@ -135,7 +135,7 @@ public class HeadlessOp extends OpMode {
         final double slideLeft = Math.pow(controller2.left_stick_y, 3.0);
         final double slideRight = Math.pow(controller2.left_stick_y, 3.0);
         final double slideTop = Math.pow(controller2.right_stick_y, 3.0);
-        final double gripPower = grip;
+        final boolean gripPower = grip;
 
         // Apply power to slide motors and gripper
         robot.setSlideMotors(slideLeft, slideRight, slideTop);
