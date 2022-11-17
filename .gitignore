@@ -92,3 +92,4 @@ TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/opmode/clawTest.java
 java_pid12180.hprof
 TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/opmode/vision/eocvsim_workspace.json
 TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/opmode/vision/EOCV-Sim-3.4.2-all.jar
+*.hprof
