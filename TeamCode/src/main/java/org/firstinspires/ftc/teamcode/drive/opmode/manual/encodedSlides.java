@@ -33,9 +33,9 @@ public class encodedSlides extends LinearOpMode {
         slideTop.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         // Start the motor moving by setting the max velocity to 200 ticks per second
-        slideLeft.setVelocity(800);
-        slideRight.setVelocity(800);
-        slideTop.setVelocity(500);
+        //slideLeft.setVelocity(800);
+        //slideRight.setVelocity(800);
+        //slideTop.setVelocity(500);
 
         // While the Op Mode is running, show the motor's status via telemetry
         while (opModeIsActive()) {

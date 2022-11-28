@@ -12,7 +12,8 @@ public class advancedSlideControl {
     private final HardwareMap hardwareMap;
 
     // Create motor, servo, and gyro objects
-    private final DcMotorEx slideLeft, slideRight, slideTop;
+    private DcMotorEx slideLeft, slideRight, slideTop;
+    private Servo leftGripServo, rightGripServo;
 
     // Create robot class
     public advancedSlideControl(final HardwareMap _hardwareMap) {
@@ -23,6 +24,9 @@ public class advancedSlideControl {
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideleft");
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
         slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
+
+        leftGripServo = hardwareMap.servo.get("leftGripServo");
+        rightGripServo = hardwareMap.servo.get("rightGripServo");
     }
 
     // This function accepts a motor mode followed by a list of DcMotor objects
@@ -33,21 +37,12 @@ public class advancedSlideControl {
         }
     }
 
-    // Invoke setMotorMode() to turn on encoders
     public void stopAndResetMotors() {
         setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, slideTop);
     }
 
-    // Invoke setMotorMode() to turn off encoders
     public void restartMotors() {
         setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, slideTop);
-    }
-
-    // Does the same thing as setMotorMode(), just with a zeroPowerMode
-    private void setBrake(DcMotorEx.ZeroPowerBehavior mode, DcMotorEx... motors) {
-        for (DcMotorEx motor : motors) {
-            motor.setZeroPowerBehavior(mode);
-        }
     }
 
     public void setHeight(int height) {
@@ -63,5 +58,14 @@ public class advancedSlideControl {
         for (DcMotorEx motor : motors) {
             motor.setVelocity(vel);
         }
+    }
+
+    public void setGrip(boolean grip, Servo leftServo, Servo rightServo) {
+        double gripPower = grip ? 0 : 1;
+        double leftPos = ((-1 * gripPower + 1) / 3) + 5.0/9;
+        double rightPos = (gripPower / 3) + 2.0/3;
+
+        leftServo.setPosition(leftPos);
+        rightServo.setPosition(rightPos);
     }
 }
