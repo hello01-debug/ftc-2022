@@ -49,7 +49,7 @@ public class NewManualOp extends OpMode {
 
         // Change multiplier when base driver presses circle
         if (controller1.circleOnce()) {
-            multiplier = multiplier == 1.0 ? 0.25 : 1.0;
+            multiplier = (multiplier == 1.0) ? 0.25 : 1.0;
         }
 
         // Stow and unstow the gripper
