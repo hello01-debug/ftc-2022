@@ -74,6 +74,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
+    public Servo leftGripServo, rightGripServo;
+    public DcMotorEx slideLeft, slideRight, slideTop;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -120,6 +123,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        leftGripServo = hardwareMap.servo.get("leftGripServo");
+        rightGripServo = hardwareMap.servo.get("rightGripServo");
+
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
+        slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -312,5 +322,44 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    private void setMotorMode(DcMotorEx.RunMode mode, DcMotorEx... motors) {
+        // Iterate over each DcMotor object and set their motor mode
+        for (DcMotorEx motor : motors) {
+            motor.setMode(mode);
+        }
+    }
+
+    public void stopAndResetMotors() {
+        setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, slideTop);
+    }
+
+    public void restartMotors() {
+        setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, slideTop);
+    }
+
+    public void setHeight(int height) {
+        slideLeft.setTargetPosition(height);
+        slideRight.setTargetPosition(-height);
+    }
+
+    public void setExtension(int ext) {
+        slideTop.setTargetPosition(-ext);
+    }
+
+    public void setSlideVelocity(int vel, DcMotorEx... motors) {
+        for (DcMotorEx motor : motors) {
+            motor.setVelocity(vel);
+        }
+    }
+
+    public void setGrip(boolean grip) {
+        double gripPower = grip ? 0 : 1;
+        double leftPos = ((-1 * gripPower + 1) / 3) + 5.0/9;
+        double rightPos = (gripPower / 3) + 2.0/3;
+
+        leftGripServo.setPosition(leftPos);
+        rightGripServo.setPosition(rightPos);
     }
 }

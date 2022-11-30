@@ -25,23 +25,16 @@ public class redRightScore extends LinearOpMode {
     private final double travelSpeed = 15.0, travelAccel = 15.0;
     private final double adjustmentSpeed = 1.5, adjustmentAccel = 1.5;
 
-    private Servo leftGripServo, rightGripServo;
-    private DcMotorEx slideLeft, slideRight, slideTop;
+    SampleMecanumDrive drive;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        drive = new SampleMecanumDrive(hardwareMap);
 
-        leftGripServo = hardwareMap.servo.get("leftGripServo");
-        rightGripServo = hardwareMap.servo.get("rightGripServo");
-
-        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
-        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
-        slideTop = hardwareMap.get(DcMotorEx.class, "slideTop");
-
-        stopAndResetMotors();
-        setGrip(false);
-        setSlideVelocity(0, slideLeft, slideRight, slideTop);
-        stopAndResetMotors();
+        drive.stopAndResetMotors();
+        drive.setGrip(false);
+        drive.setSlideVelocity(0, drive.slideLeft, drive.slideRight, drive.slideTop);
+        drive.stopAndResetMotors();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -57,34 +50,34 @@ public class redRightScore extends LinearOpMode {
 
         waitForStart();
 
-        setGrip(true);
-        setHeight(200);
-        setExtension(0);
-        restartMotors();
+        drive.setGrip(true);
+        drive.setHeight(200);
+        drive.setExtension(0);
+        drive.restartMotors();
         sleep(500);
-        setSlideVelocity(400, slideLeft, slideRight);
-        setSlideVelocity(0, slideTop);
+        drive.setSlideVelocity(400, drive.slideLeft, drive.slideRight);
+        drive.setSlideVelocity(0, drive.slideTop);
         sleep(500);
 
-        setHeight(4200);
-        setSlideVelocity(1000, slideLeft, slideRight);
+        drive.setHeight(4200);
+        drive.setSlideVelocity(1000, drive.slideLeft, drive.slideRight);
 
         drive.followTrajectorySequence(goToStack);
 
-        setExtension(750);
-        setSlideVelocity(1000, slideTop);
+        drive.setExtension(750);
+        drive.setSlideVelocity(1000, drive.slideTop);
 
         sleep(1000);
-        setGrip(false);
+        drive.setGrip(false);
 
         sleep(500);
-        setHeight(100);
-        setExtension(50);
-        setSlideVelocity(1000, slideLeft, slideRight);
-        setSlideVelocity(750, slideTop);
+        drive.setHeight(100);
+        drive.setExtension(50);
+        drive.setSlideVelocity(1000, drive.slideLeft, drive.slideRight);
+        drive.setSlideVelocity(750, drive.slideTop);
         sleep(5000);
 
-        stopAndResetMotors();
+        drive.stopAndResetMotors();
 
         while (true) {
             if (isStopRequested()) {
@@ -94,42 +87,5 @@ public class redRightScore extends LinearOpMode {
 
     }
 
-    private void setMotorMode(DcMotorEx.RunMode mode, DcMotorEx... motors) {
-        // Iterate over each DcMotor object and set their motor mode
-        for (DcMotorEx motor : motors) {
-            motor.setMode(mode);
-        }
-    }
 
-    public void stopAndResetMotors() {
-        setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, slideTop);
-    }
-
-    public void restartMotors() {
-        setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, slideTop);
-    }
-
-    public void setHeight(int height) {
-        slideLeft.setTargetPosition(height);
-        slideRight.setTargetPosition(-height);
-    }
-
-    public void setExtension(int ext) {
-        slideTop.setTargetPosition(-ext);
-    }
-
-    public void setSlideVelocity(int vel, DcMotorEx... motors) {
-        for (DcMotorEx motor : motors) {
-            motor.setVelocity(vel);
-        }
-    }
-
-    public void setGrip(boolean grip) {
-        double gripPower = grip ? 0 : 1;
-        double leftPos = ((-1 * gripPower + 1) / 3) + 5.0/9;
-        double rightPos = (gripPower / 3) + 2.0/3;
-
-        leftGripServo.setPosition(leftPos);
-        rightGripServo.setPosition(rightPos);
-    }
 }
