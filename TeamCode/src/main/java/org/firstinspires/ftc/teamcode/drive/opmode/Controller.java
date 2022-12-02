@@ -126,6 +126,10 @@ public class Controller {
         return 0 < right_bumper;
     }
 
+    public boolean rightTrigger() {return 0 < right_trigger;}
+
+    public boolean leftTrigger() {return  0 < left_trigger;}
+
     // These functions debounce the button (if the button is held for a long time it will not count as multiple presses)
     // They only return true if the value of a button is equal to 1
     public boolean dpadUpOnce() {
@@ -151,6 +155,10 @@ public class Controller {
     public boolean triangleOnce() {
         return 1 == triangle;
     }
+
+    public boolean rightTriggerOnce() {return 1 == right_trigger;}
+
+    public boolean leftTriggerOnce() {return 1 == left_trigger;}
 
     public boolean crossOnce() {
         return 1 == cross;
