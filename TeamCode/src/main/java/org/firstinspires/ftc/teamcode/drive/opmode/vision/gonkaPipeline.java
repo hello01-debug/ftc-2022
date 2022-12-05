@@ -7,69 +7,54 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-/*
-public class gonkaPipeline extends OpenCvPipeline {
-    Mat YCbCr = new Mat();
-    Mat leftCrop, rightCrop;
-    double leftavgfin, rightavgfin;
-    Mat output = new Mat();
-    Scalar rectColor = new Scalar(255.0, 0.0, 0.0);
-
-    public Mat processFrame(Mat input) {
-
-        Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
-        //telemetry.addLine("pipeline running");
-
-        Rect leftRect = new Rect(1, 1, 639, 719);
-        Rect rightRect = new Rect(640, 1, 639, 719);
-
-        input.copyTo(output);
-        Imgproc.rectangle(output, leftRect, rectColor, 2);
-        Imgproc.rectangle(output, rightRect, rectColor, 2);
-
-        leftCrop = YCbCr.submat(leftRect);
-        rightCrop = YCbCr.submat(rightRect);
-
-        Core.extractChannel(leftCrop, leftCrop, 1);
-        Core.extractChannel(rightCrop, rightCrop, 1);
-
-        Scalar leftavg = Core.mean(leftCrop);
-        Scalar rightavg = Core.mean(rightCrop);
-
-        leftavgfin = leftavg.val[0];
-        rightavgfin = rightavg.val[0];
-
-        if (leftavgfin > rightavgfin) {
-            //telemetry.addLine("left");
-        } else {
-            //telemetry.addLine("right");
-        }
-
-        return(output);
-    }
-}
- */
 
 public class gonkaPipeline extends OpenCvPipeline {
-    Mat YcBcr = new Mat();
-    Mat output = new Mat();
+
+    // Define mats to be used throughout the pipeline
+    Mat YcBcr = new Mat();  // Used to store the converted mat as YcBcR
+    Mat output = new Mat(); // Mat to be returned at the end of the pipeline
+    Mat mask = new Mat();   // Mat that will hold the color-based mask of the scene
+
+    // Define variables related to the slicing of the frame
+    // TODO: make this dynamic based on a given resolution and number of slices
     Mat[] verticalMat = new Mat[20];
     Rect[] verticalSlices = new Rect[20];
     Scalar rectColor = new Scalar(255.0, 0.0, 0.0);
     Scalar[] verticalAvg = new Scalar[20];
+    Scalar lower = new Scalar(0.0, 138.8, 51.0);
+    Scalar upper = new Scalar(255.0, 178.5, 94.9);
+
+    int left, right;
 
     public Mat processFrame(Mat input) {
+        left = 0;
+        right = 0;
 
         Imgproc.cvtColor(input, YcBcr, Imgproc.COLOR_RGB2YCrCb);
 
-        input.copyTo(output);
+        Core.inRange(YcBcr, lower, upper, mask);
+
+        YcBcr.copyTo(output);
 
         for (int currentRect = 0; currentRect < 20; currentRect++) {
             verticalSlices[currentRect] = new Rect((currentRect * 64), 1, 64, 719);
-            Imgproc.rectangle(output, verticalSlices[currentRect], rectColor, 2);
-            verticalMat[currentRect] = YcBcr.submat(verticalSlices[currentRect]);
+            verticalMat[currentRect] = mask.submat(verticalSlices[currentRect]);
             verticalAvg[currentRect] = Core.mean(verticalMat[currentRect]);
-            Imgproc.putText(output, Double.toString(verticalAvg[currentRect].val[0]), new Point((currentRect * 64 + 1), 200), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, rectColor);
+            if (verticalAvg[currentRect].val[0] > 128) {
+                Imgproc.rectangle(output, verticalSlices[currentRect], new Scalar(0.0, 255.0, 0.0), 2);
+                if (currentRect < 10) {
+                    left++;
+                } else {
+                    right++;
+                }
+            } else {
+                Imgproc.rectangle(output, verticalSlices[currentRect], rectColor, 2);
+            }
+            if (left > right) {
+                Imgproc.putText(output,"Move Left", new Point(360, 360), Imgproc.FONT_HERSHEY_SIMPLEX, 5, new Scalar(0.0, 0.0, 255.0), 5);
+            } else if (right > left) {
+                Imgproc.putText(output,"Move Right", new Point(360, 360), Imgproc.FONT_HERSHEY_SIMPLEX, 5, new Scalar(0.0, 0.0, 255.0), 5);
+            }
         }
 
         // Basically i'll put up a mask that only lets yellow through, then it will check to see which square has the most visible (non-masked) pixels to see where the pole would be
