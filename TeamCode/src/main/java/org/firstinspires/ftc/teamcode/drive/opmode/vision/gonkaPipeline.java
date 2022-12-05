@@ -17,6 +17,7 @@ public class gonkaPipeline extends OpenCvPipeline {
 
     // Define variables related to the slicing of the frame
     // TODO: make this dynamic based on a given resolution and number of slices
+    boolean[] IsYellow = new boolean[20];
     Mat[] verticalMat = new Mat[20];
     Rect[] verticalSlices = new Rect[20];
     Scalar rectColor = new Scalar(255.0, 0.0, 0.0);
@@ -42,6 +43,7 @@ public class gonkaPipeline extends OpenCvPipeline {
             verticalAvg[currentRect] = Core.mean(verticalMat[currentRect]);
             if (verticalAvg[currentRect].val[0] > 128) {
                 Imgproc.rectangle(output, verticalSlices[currentRect], new Scalar(0.0, 255.0, 0.0), 2);
+                IsYellow[currentRect] = true;
                 if (currentRect < 10) {
                     left++;
                 } else {
@@ -49,11 +51,17 @@ public class gonkaPipeline extends OpenCvPipeline {
                 }
             } else {
                 Imgproc.rectangle(output, verticalSlices[currentRect], rectColor, 2);
+                IsYellow[currentRect] = false;
             }
-            if (left > right) {
-                Imgproc.putText(output,"Move Left", new Point(360, 360), Imgproc.FONT_HERSHEY_SIMPLEX, 5, new Scalar(0.0, 0.0, 255.0), 5);
-            } else if (right > left) {
-                Imgproc.putText(output,"Move Right", new Point(360, 360), Imgproc.FONT_HERSHEY_SIMPLEX, 5, new Scalar(0.0, 0.0, 255.0), 5);
+            if (IsYellow[9] && IsYellow[10]) {
+                Imgproc.putText(output, "Perfect", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 2.0, new Scalar(255.0, 0.0, 0.0));
+            }
+            else
+            {
+                if (left < right)
+                    Imgproc.putText(output, "Move right", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 2.0, new Scalar(255.0, 0.0, 0.0));
+                else if (right < left)
+                    Imgproc.putText(output, "Move left", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 2.0, new Scalar(255.0, 0.0, 0.0));
             }
         }
 
