@@ -98,30 +98,30 @@ public class HeadlessOp extends OpMode {
 
         if (controller2.Circle() || controller2.Cross() || controller2.Square() || controller2.Triangle()) {
             if (controller2.Triangle()) {
-                robot.setMotors(0.1f, 0.1f, 0.1f, 0.1f, 1);
+                robot.setMotors(1.5f, 1.5f, 1.5f, 1.5f, 1);
             }
             if (controller2.Cross()) {
-                robot.setMotors(-0.1f, -0.1f, -0.1f, -0.1f, 1);
+                robot.setMotors(-1.5f, -1.5f, -1.5f, -1.5f, 1);
             }
             if (controller2.Square()) {
-                robot.setMotors(-0.1f, 0.1f, 0.1f, -0.1f, 1);
+                robot.setMotors(-1.5f, 1.5f, 1.5f, -1.5f, 1);
             }
             if (controller2.Circle()) {
-                robot.setMotors(0.1f, -0.1f, -0.1f, 0.1f, 1);
+                robot.setMotors(1.5f, -1.5f, -1.5f, 1.5f, 1);
             }
         }
         else if (controller2.dpadDown() || controller2.dpadUp() || controller2.dpadLeft() || controller2.dpadRight()) {
             if (controller2.dpadUp()) {
-                robot.setMotors(1.5f, 1.5f, 1.5f, 1.5f, 1);
+                robot.setMotors(0.1f, 0.1f, 0.1f, 0.1f, 1);
             }
             if (controller2.dpadDown()) {
-                robot.setMotors(-1.5f, -1.5f, -1.5f, -1.5f, 1);
+                robot.setMotors(-0.1f, -0.1f, -0.1f, -0.1f, 1);
             }
             if (controller2.dpadLeft()) {
-                robot.setMotors(-1.5f, 1.5f, 1.5f, -1.5f, 1);
+                robot.setMotors(-0.1f, 0.1f, 0.1f, -0.1f, 1);
             }
             if (controller2.dpadRight()) {
-                robot.setMotors(1.5f, -1.5f, -1.5f, 1.5f, 1);
+                robot.setMotors(0.1f, -0.1f, -0.1f, 0.11f, 1);
             }
         }
         else if (controller2.rightBumper()) {
