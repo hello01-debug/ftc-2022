@@ -9,6 +9,13 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class gonkaPipeline extends OpenCvPipeline {
+    public enum wiggleDirection {
+        LEFT,
+        RIGHT,
+        STOP
+    }
+
+    wiggleDirection outputDirection = wiggleDirection.STOP;
 
     // Define mats to be used throughout the pipeline
     Mat YcBcr = new Mat();  // Used to store the converted mat as YcBcR
@@ -27,6 +34,7 @@ public class gonkaPipeline extends OpenCvPipeline {
 
     int left, right;
 
+    @Override
     public Mat processFrame(Mat input) {
         left = 0;
         right = 0;
@@ -54,14 +62,19 @@ public class gonkaPipeline extends OpenCvPipeline {
                 IsYellow[currentRect] = false;
             }
             if (IsYellow[9] && IsYellow[10]) {
-                Imgproc.putText(output, "Perfect", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 2.0, new Scalar(255.0, 0.0, 0.0));
+                Imgproc.putText(output, "Perfect", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 0.0, 255.0));
+                outputDirection = wiggleDirection.STOP;
             }
             else
             {
-                if (left < right)
-                    Imgproc.putText(output, "Move right", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 2.0, new Scalar(255.0, 0.0, 0.0));
-                else if (right < left)
-                    Imgproc.putText(output, "Move left", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 2.0, new Scalar(255.0, 0.0, 0.0));
+                if (left < right) {
+                    Imgproc.putText(output, "Move right", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 0.0, 255.0));
+                    outputDirection = wiggleDirection.RIGHT;
+                }
+                else if (right < left) {
+                    Imgproc.putText(output, "Move left", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 0.0, 255.0));
+                    outputDirection = wiggleDirection.LEFT;
+                }
             }
         }
 
@@ -71,5 +84,9 @@ public class gonkaPipeline extends OpenCvPipeline {
 
         return output;
 
+    }
+
+    public wiggleDirection getDirection() {
+        return this.outputDirection;
     }
 }

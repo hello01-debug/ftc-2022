@@ -98,16 +98,16 @@ public class HeadlessOp extends OpMode {
 
         if (controller2.Circle() || controller2.Cross() || controller2.Square() || controller2.Triangle()) {
             if (controller2.Triangle()) {
-                robot.setMotors(1.5f, 1.5f, 1.5f, 1.5f, 1);
+                robot.setMotors(0.75f, 0.75f, 0.75f, 0.75f, 1);
             }
             if (controller2.Cross()) {
-                robot.setMotors(-1.5f, -1.5f, -1.5f, -1.5f, 1);
+                robot.setMotors(-0.75f, -0.75f, -0.75f, -0.75f, 1);
             }
             if (controller2.Square()) {
-                robot.setMotors(-1.5f, 1.5f, 1.5f, -1.5f, 1);
+                robot.setMotors(-0.75f, 0.75f, 0.75f, -0.75f, 1);
             }
             if (controller2.Circle()) {
-                robot.setMotors(1.5f, -1.5f, -1.5f, 1.5f, 1);
+                robot.setMotors(0.75f, -0.75f, -0.75f, 0.75f, 1);
             }
         }
         else if (controller2.dpadDown() || controller2.dpadUp() || controller2.dpadLeft() || controller2.dpadRight()) {
