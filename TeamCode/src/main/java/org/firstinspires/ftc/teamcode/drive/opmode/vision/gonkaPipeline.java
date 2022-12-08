@@ -15,6 +15,7 @@ public class gonkaPipeline extends OpenCvPipeline {
         STOP
     }
 
+
     wiggleDirection outputDirection = wiggleDirection.STOP;
 
     // Define mats to be used throughout the pipeline
@@ -43,10 +44,10 @@ public class gonkaPipeline extends OpenCvPipeline {
 
         Core.inRange(YcBcr, lower, upper, mask);
 
-        YcBcr.copyTo(output);
+        input.copyTo(output);
 
         for (int currentRect = 0; currentRect < 20; currentRect++) {
-            verticalSlices[currentRect] = new Rect((currentRect * 64), 1, 64, 719);
+            verticalSlices[currentRect] = new Rect((currentRect * 64), 0, 64, 720);
             verticalMat[currentRect] = mask.submat(verticalSlices[currentRect]);
             verticalAvg[currentRect] = Core.mean(verticalMat[currentRect]);
             if (verticalAvg[currentRect].val[0] > 128) {
