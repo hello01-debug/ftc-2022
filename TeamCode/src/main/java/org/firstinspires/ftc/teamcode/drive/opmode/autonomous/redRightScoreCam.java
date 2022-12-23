@@ -97,7 +97,7 @@ public class redRightScoreCam extends LinearOpMode {
         drive.setSlideVelocity(1000, drive.slideTop);
         drive.setExtension(700);
 
-        sleep(1000);
+        sleep(1500);
         drive.setGrip(false);
         sleep(500);
 
@@ -113,7 +113,7 @@ public class redRightScoreCam extends LinearOpMode {
                 .build()
         );
         drive.updatePoseEstimate();
-        drive.setHeight(650);
+        drive.setHeight(750);
         drive.setExtension(1950);
         sleep(1500);
         drive.setGrip(true);
