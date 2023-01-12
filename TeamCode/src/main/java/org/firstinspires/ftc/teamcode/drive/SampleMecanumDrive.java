@@ -324,6 +324,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
+    // Custom code from this point on
+
+    // Iterate over a list of motors and set them to a give mode
     private void setMotorMode(DcMotorEx.RunMode mode, DcMotorEx... motors) {
         // Iterate over each DcMotor object and set their motor mode
         for (DcMotorEx motor : motors) {
@@ -331,29 +334,45 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
     }
 
+    // Call setMotorMode() to turn off and reset the encoders on all slide motors
     public void stopAndResetMotors() {
         setMotorMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER, slideLeft, slideRight, slideTop);
     }
 
+    // Call setMotorMode() to turn on all slide motors
     public void restartMotors() {
         setMotorMode(DcMotorEx.RunMode.RUN_TO_POSITION, slideLeft, slideRight, slideTop);
     }
 
+    // Bundles all the functions needed to initialize the arm controls
+    public void initArm() {
+        stopAndResetMotors();
+        setGrip(false);
+        setSlideVelocity(0, slideLeft, slideRight, slideTop);
+        setHeight(0);
+        setExtension(0);
+        restartMotors();
+    }
+
+    // Set the target encoder position of the vertical slides
     public void setHeight(int height) {
         slideLeft.setTargetPosition(height);
         slideRight.setTargetPosition(-height);
     }
 
+    // Set the target encoders position of the horizontal slide
     public void setExtension(int ext) {
         slideTop.setTargetPosition(-ext);
     }
 
+    // Iterate over a list of motors and set them to a provided velocity in ticks/second
     public void setSlideVelocity(int vel, DcMotorEx... motors) {
         for (DcMotorEx motor : motors) {
             motor.setVelocity(vel);
         }
     }
 
+    // Takes a boolean grip value and does the math to convert it to a servo position
     public void setGrip(boolean grip) {
         double gripPower = grip ? 0 : 1;
         double leftPos = ((-1 * gripPower + 1) / 3) + 5.0/9;
