@@ -75,6 +75,8 @@ public class parkingZoneFinder extends OpenCvPipeline {
 }
 
 /*
+Color ranges for each parking zone
+
 1: (0, 128, 0) (255, 255, 90)
 2: (0, 180, 0) (255, 255, 150)
 3: (0, 43, 160) (255, 106, 185)
