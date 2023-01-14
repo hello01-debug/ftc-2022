@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.drive.opmode.vision.parkingZoneFinder;
 
 
 @Config
-@Autonomous
+@Autonomous(group = "testing")
 public class parkingZoneTest extends LinearOpMode {
     SampleMecanumDrive drive;
     OpenCvWebcam camera = null;

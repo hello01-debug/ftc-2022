@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
-@Autonomous
+@Autonomous(group = "testing")
 public class asyncInterruptionTest extends LinearOpMode {
 
     SampleMecanumDrive drive;
