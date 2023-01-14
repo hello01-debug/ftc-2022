@@ -43,10 +43,10 @@ public class poleFinder extends OpenCvPipeline {
         this.height = 720;
         this.slices = 64;
 
-        isYellow = new boolean[64];
-        verticalMat = new Mat[64];
-        verticalRects = new Rect[64];
-        verticalAvg = new Scalar[64];
+        isYellow = new boolean[this.slices];
+        verticalMat = new Mat[this.slices];
+        verticalRects = new Rect[this.slices];
+        verticalAvg = new Scalar[this.slices];
     }
 
     public poleFinder(int width, int height, int slices) {  // Create a constructor that allows user to specify certain variables
