@@ -30,8 +30,8 @@ public class poleFinder extends OpenCvPipeline {
     Scalar[] verticalAvg;
 
     // Declare scalars that represent our color thresholds
-    Scalar lower = new Scalar(0.0, 138.8, 51.0);
-    Scalar upper = new Scalar(255.0, 178.5, 94.9);
+    Scalar lower = new Scalar(0.0, 110.0, 27.0);
+    Scalar upper = new Scalar(255.0, 195.0, 100.0);
 
     // Define colors for screen elements
     Scalar rectBackground = new Scalar(255.0, 0.0, 0.0);
@@ -86,7 +86,7 @@ public class poleFinder extends OpenCvPipeline {
             verticalAvg[currentSlice] = Core.mean(verticalMat[currentSlice]);
 
             // Check if a certain amount of the current slice is yellow
-            if (verticalAvg[currentSlice].val[0] > 128) {
+            if (verticalAvg[currentSlice].val[0] > 196) {
                 // If we deem the slice yellow, we draw a rectangle with the subject color and set
                 // a flag to true
                 Imgproc.rectangle(output, verticalRects[currentSlice], rectSubject, 2);
@@ -102,6 +102,14 @@ public class poleFinder extends OpenCvPipeline {
             isYellow = tempYellow.clone();
         }
 
+        if (getLocation() == poleLocation.LEFT) {
+            Imgproc.putText(output, "LEFT", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 0.0, 255.0));
+        } else if (getLocation() == poleLocation.RIGHT) {
+            Imgproc.putText(output, "RIGHT", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 0.0, 255.0));
+        } else if (getLocation() == poleLocation.ALIGNED) {
+            Imgproc.putText(output, "ALIGNED", new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 0.0, 255.0));
+        }
+
         return output;
     }
 
@@ -109,7 +117,7 @@ public class poleFinder extends OpenCvPipeline {
         int targetIndex = slices / 2;
         int left = 0, right = 0;
 
-        if (isYellow[targetIndex - 1] && isYellow[targetIndex]) {
+        if (isYellow[targetIndex - 2] && isYellow[targetIndex - 1] && isYellow[targetIndex] && isYellow[targetIndex + 1]) {
             return poleLocation.ALIGNED;
         }
 

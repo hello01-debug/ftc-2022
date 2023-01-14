@@ -163,7 +163,7 @@ public class redRightScoreCam extends LinearOpMode {
                 .build()
         );
 
-        // Update out position
+        // Update our position
         drive.updatePoseEstimate();
         // Adjust our angle
         adjustAngle(drive);

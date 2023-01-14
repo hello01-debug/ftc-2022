@@ -36,11 +36,14 @@ public class asyncAngleAdjust extends LinearOpMode {
             @Override
             public void onOpened() {
                 camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+                telemetry.addLine("camera ready");
+                telemetry.update();
             }
 
             @Override
             public void onError(int errorCode) {
-
+                telemetry.addData("camera error", errorCode);
+                telemetry.update();
             }
         });
 
@@ -81,24 +84,16 @@ public class asyncAngleAdjust extends LinearOpMode {
         while (moveDir != poleFinder.poleLocation.ALIGNED) {
             _drive.update();
             moveDir = poleFinderPipeline.getLocation();
-            if (moveDir != prevDir) {
-                prevDir = moveDir;
-                if (moveDir == poleFinder.poleLocation.LEFT) {
-                    _drive.followTrajectorySequenceAsync(doNothing);
-                    _drive.update();
-                    _drive.followTrajectorySequenceAsync(turnLeft);
-                } else if (moveDir == poleFinder.poleLocation.RIGHT) {
-                    _drive.followTrajectorySequenceAsync(doNothing);
-                    _drive.update();
-                    _drive.followTrajectorySequenceAsync(turnRight);
-                }
-            }
             telemetry.addData("", moveDir);
             telemetry.update();
+            if (isStopRequested()) { break; }
         }
 
         _drive.followTrajectorySequenceAsync(doNothing);
         _drive.update();
+
+        telemetry.addLine("done");
+        telemetry.update();
 
         return;
 
