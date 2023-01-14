@@ -43,19 +43,10 @@ public class parkingZoneTest extends LinearOpMode {
             }
         });
 
-        while (true) {
+        while (!isStarted()) {
             zone = parkingZonePipeline.getParkingZone();
-            if (isStarted()) { break; }
-        }
-
-        if (zone == parkingZoneFinder.parkingZone.ZONE1) {
-            telemetry.addLine("Zone 1");
-        } else if (zone == parkingZoneFinder.parkingZone.ZONE2) {
-            telemetry.addLine("Zone 2");
-        } else if (zone == parkingZoneFinder.parkingZone.ZONE3) {
-            telemetry.addLine("Zone 3");
-        } else {
-            telemetry.addLine("Unknown");
+            telemetry.addData("Parking Zone", zone);
+            telemetry.update();
         }
     }
 }

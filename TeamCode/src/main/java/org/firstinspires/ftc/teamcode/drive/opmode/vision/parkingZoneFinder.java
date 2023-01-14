@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode.vision;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -17,26 +18,30 @@ public class parkingZoneFinder extends OpenCvPipeline {
     }
 
     // Scalars to define color ranges of interest
-    public final Scalar oneLower = new Scalar(0.0, 128.0, 0.0);
-    public final Scalar oneUpper = new Scalar(255.0, 255.0, 90.0);
+    public final Scalar oneLower = new Scalar(0.0, 100.0, 0.0);
+    public final Scalar oneUpper = new Scalar(255.0, 255.0, 100.0);
 
-    public final Scalar twoLower = new Scalar(0.0, 180.0, 0.0);
-    public final Scalar twoUpper = new Scalar(255.0, 255.0, 150.0);
+    public final Scalar twoLower = new Scalar(0.0, 150.0, 0.0);
+    public final Scalar twoUpper = new Scalar(255.0, 255.0, 255.0);
 
-    public final Scalar threeLower = new Scalar(0.0, 43.0, 160.0);
-    public final Scalar threeUpper = new Scalar(255.0, 106.0, 185.0);
+    public final Scalar threeLower = new Scalar(0.0, 0.0, 140.0);
+    public final Scalar threeUpper = new Scalar(255.0, 135.0, 255.0);
 
     private Mat YcBcR = new Mat();
     private Mat oneMat = new Mat(), twoMat = new Mat(), threeMat = new Mat();
+    private Mat targetMat = new Mat();
     private double oneAvg, twoAvg, threeAvg;
 
     private Mat output = new Mat();
+
+    private final Rect targetArea = new Rect(300, 440, 280, 280);
 
     private int zoneNumber = -1;
 
     public Mat processFrame(Mat input) {
         //input.copyTo(output);
-        Imgproc.cvtColor(input, YcBcR, Imgproc.COLOR_RGB2YCrCb);
+        targetMat = input.submat(targetArea);
+        Imgproc.cvtColor(targetMat, YcBcR, Imgproc.COLOR_RGB2YCrCb);
 
         Core.inRange(YcBcR, oneLower, oneUpper, oneMat);
         Core.inRange(YcBcR, twoLower, twoUpper, twoMat);
@@ -55,6 +60,8 @@ public class parkingZoneFinder extends OpenCvPipeline {
         }
 
         input.copyTo(output);
+
+        Imgproc.rectangle(output, targetArea, new Scalar(255.0, 0.0, 0.0), 2);
 
         Imgproc.putText(output, "Zone #" + String.valueOf(zoneNumber), new Point(25, 100), Imgproc.FONT_HERSHEY_SIMPLEX, 3.0, new Scalar(0.0, 255.0, 0.0));
 

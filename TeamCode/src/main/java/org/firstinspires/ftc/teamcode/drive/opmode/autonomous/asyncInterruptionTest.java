@@ -14,8 +14,8 @@ public class asyncInterruptionTest extends LinearOpMode {
 
     SampleMecanumDrive drive;
 
-    private final double maxAngVel = 3.0;
-    private final double maxAngAccel = 3.0;
+    private final double maxAngVel = Math.toRadians(10.0);
+    private final double maxAngAccel = Math.toRadians(5.0);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,10 +35,15 @@ public class asyncInterruptionTest extends LinearOpMode {
 
         waitForStart();
 
+        long startTime = System.currentTimeMillis();
+
         drive.followTrajectorySequenceAsync(turnLeft);
 
-        sleep(5000);
+        while ((System.currentTimeMillis() - startTime) < 5000) {
+            drive.update();
+        }
 
-        drive.followTrajectorySequence(turnRight);
+        drive.followTrajectorySequenceAsync(doNothing);
+        drive.update();
     }
 }
