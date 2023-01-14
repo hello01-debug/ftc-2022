@@ -12,7 +12,8 @@ public class parkingZoneFinder extends OpenCvPipeline {
     public enum parkingZone {
         ZONE1,
         ZONE2,
-        ZONE3
+        ZONE3,
+        UNKNOWN
     }
 
     // Scalars to define color ranges of interest
@@ -67,6 +68,8 @@ public class parkingZoneFinder extends OpenCvPipeline {
             return parkingZone.ZONE2;
         } else if (threeAvg > oneAvg && threeAvg > twoAvg) {
             return parkingZone.ZONE3;
+        } else {
+            return parkingZone.UNKNOWN;
         }
     }
 }
