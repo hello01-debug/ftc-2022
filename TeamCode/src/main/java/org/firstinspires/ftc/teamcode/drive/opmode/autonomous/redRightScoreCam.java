@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,11 +27,12 @@ public class redRightScoreCam extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(36, -63, Math.toRadians(90));
     private final Pose2d interPose = new Pose2d(36, -24, Math.toRadians(90));
     private final Pose2d scorePose = new Pose2d(38, -10, Math.toRadians(133));
+    private final Pose2d cyclePose = new Pose2d(30, -10, Math.toRadians(131));
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
 
-    private final double travelSpeed = 55.0, travelAccel = 38.0;
+    private final double travelSpeed = 45.0, travelAccel = 35.0;
     private final double adjustmentSpeed = 1.5, adjustmentAccel = 1.5;
-    private final double angVel = Math.toRadians(180), adjustAngVel = Math.toRadians(20);
+    private final double angVel = Math.toRadians(120), adjustAngVel = Math.toRadians(20);
 
     private final int width = 1280, height = 720, slices = 64;
 
@@ -53,17 +55,26 @@ public class redRightScoreCam extends LinearOpMode {
         // Create the first trajectory to be run when the round starts
         TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
                 //.strafeLeft(3)
-                .lineToLinearHeading(interPose,
+                /*.lineToLinearHeading(interPose,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
                 .lineToLinearHeading(scorePose,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
+                )*/
                 //.turn(-Math.atan2(drive.getPoseEstimate().getY()-24, drive.getPoseEstimate().getX()-0) - Math.toRadians(drive.getPoseEstimate().getHeading()))
                 //.turn(Math.toRadians(45))
+                .splineToSplineHeading(interPose, Math.toRadians(90),
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
+                )
+                .splineToSplineHeading(scorePose, Math.toRadians(90),
+                        SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
+
+
 
         // Set up the webcam
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "camera");
@@ -243,7 +254,7 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(1000);
 
         _drive.setSlideVelocity(4000, _drive.slideTop);
-        _drive.setHeight(250 + (stackHeight * 120));
+        _drive.setHeight(250 + (stackHeight * 150));
         _drive.setSlideVelocity(1000, drive.slideTop);
 
 
@@ -275,7 +286,7 @@ public class redRightScoreCam extends LinearOpMode {
     private void scoreCone(SampleMecanumDrive _drive) {
         _drive.updatePoseEstimate();
         TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(135), Math.toRadians(120), Math.toRadians(60))
+                .turn(Math.toRadians(133), Math.toRadians(120), Math.toRadians(60))
                 .build();
 
 
