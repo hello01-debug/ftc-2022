@@ -12,7 +12,10 @@ ScoreConeFromStack
 
 
 TOSTACK
-step one : _ retracting slides  __ lowering slides and then turning to the cone stack   multifly I by how much we need to change it to lower due to less cones stacked
+step one : _ retracting slides
+ __ lowering slides
+ and then turning to the cone stack
+   (multifly I by how much we need to change it to lower due to less cones stacked)
 Step two : Reach out and grab cone
 step three: Lift slides
 Step Four: Short pause retract slides

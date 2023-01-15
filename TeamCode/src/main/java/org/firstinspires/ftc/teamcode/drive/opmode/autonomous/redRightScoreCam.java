@@ -237,8 +237,7 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(1000);
 
         _drive.setHeight(240 + (stackHeight * 100));
-        sleep(3000);
-        _drive.setExtension(1950);
+
 
         _drive.updatePoseEstimate();
         _drive.followTrajectorySequence
@@ -251,13 +250,15 @@ public class redRightScoreCam extends LinearOpMode {
                 .build()
         );
 
-
+        _drive.setExtension(1950);
+        _drive.setSlideVelocity(2000, _drive.slideTop );
+        sleep(1250)
         _drive.setGrip(true);
-        sleep(2000);
+        sleep(500);
         //end of step two
         //start of step three
         _drive.setHeight(2500);
-        sleep(2000);
+        sleep(1000);
         //Start of step four
         _drive.setExtension(960);
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
