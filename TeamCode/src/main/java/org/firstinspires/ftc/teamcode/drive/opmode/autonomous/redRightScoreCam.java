@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,13 +25,13 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous(name = "Red Right Score w/ Camera")
 public class redRightScoreCam extends LinearOpMode {
 
-    private final Pose2d startPose = new Pose2d(36, -63, Math.toRadians(90));
-    private final Pose2d interPose = new Pose2d(36, -24, Math.toRadians(90));
+    private final Pose2d startPose = new Pose2d(36, -64, Math.toRadians(180));
+    private final Pose2d interPose = new Pose2d(36, -24, Math.toRadians(180));
     private final Pose2d scorePose = new Pose2d(38, -10, Math.toRadians(133));
     private final Pose2d cyclePose = new Pose2d(30, -10, Math.toRadians(131));
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
 
-    private final double travelSpeed = 45.0, travelAccel = 35.0;
+    private final double travelSpeed = 45.0, travelAccel = 30.0;
     private final double adjustmentSpeed = 1.5, adjustmentAccel = 1.5;
     private final double angVel = Math.toRadians(120), adjustAngVel = Math.toRadians(20);
 
@@ -53,25 +54,15 @@ public class redRightScoreCam extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         // Create the first trajectory to be run when the round starts
+
         TrajectorySequence goToStack = drive.trajectorySequenceBuilder(startPose)
-                //.strafeLeft(3)
-                /*.lineToLinearHeading(interPose,
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )
+                .addSpatialMarker(new Vector2d(36, -24), () -> {
+                    drive.setHeight(2500);
+                })
                 .lineToLinearHeading(scorePose,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
-                )*/
-                //.turn(-Math.atan2(drive.getPoseEstimate().getY()-24, drive.getPoseEstimate().getX()-0) - Math.toRadians(drive.getPoseEstimate().getHeading()))
-                //.turn(Math.toRadians(45))
-                .splineToSplineHeading(interPose, Math.toRadians(90),
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
-                .splineToSplineHeading(scorePose, Math.toRadians(90),
-                        SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(travelAccel))
                 .build();
 
 
@@ -101,6 +92,7 @@ public class redRightScoreCam extends LinearOpMode {
 
         // Close the grip and move the slide up a small amount
         drive.setGrip(true);
+        sleep(250);
         drive.setHeight(200);
         drive.setExtension(50);
         drive.setSlideVelocity(400, drive.slideLeft, drive.slideRight);
@@ -109,12 +101,15 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(250);
 
         // Increase the height of the slide and increase its velocity
-        drive.setHeight(2500);
-        drive.setSlideVelocity(1000, drive.slideLeft, drive.slideRight);
+        drive.setHeight(3200);
+        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
+
+        drive.followTrajectorySequence(goToStack);
 
         // Without waiting, run the trajectory we prepared earlier
         // This will take us to our cycle location
-        drive.followTrajectorySequence(goToStack);
+
+      //  drive.followTrajectorySequence(goToStack);
         // Update roadrunner's idea of where the robot is after we ran the trajectory
         drive.updatePoseEstimate();
         // Adjust our angle so that we are lined up with the pole
@@ -140,70 +135,7 @@ public class redRightScoreCam extends LinearOpMode {
         // Wait for grip to fully open and cone to drop
         sleep(500);
 
-        /*
-
-        // Drop and retract slides to cycle the next cone
-        drive.setExtension(100);
-        drive.setHeight(100);
-        drive.setSlideVelocity(1000, drive.slideLeft, drive.slideRight, drive.slideTop);
-
-        // Update roadrunner's idea of our location after we adjusted it
-        drive.updatePoseEstimate();
-        // Turn around to pick up the next cone
-        drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
-                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(20)
-                )
-                .build()
-        );
-        // Update our pose again
-        drive.updatePoseEstimate();
-
-        // Reach out for the cone from the stack
-        drive.setHeight(750);
-        drive.setExtension(1950);
-        // Wait until grip is in position
-        sleep(1500);
-        // Close grip
-        drive.setGrip(true);
-        // Wait for grip to be fully closed
-        sleep(500);
-
-        // Raise vertical slides to the correct height
-        drive.setHeight(2500);
-        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
-        // Wait until cone is completely off the stack before pulling the horizontal slide in
-        sleep(500);
-        drive.setExtension(0);
-
-        // Turn back around to face the pole
-        drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(135)),
-                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(20)
-                )
-                .build()
-        );
-
-        // Update our position
-        drive.updatePoseEstimate();
-        // Adjust our angle
-        adjustAngle(drive);
-
-        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
-        drive.setHeight(4200);
-        sleep(500);
-        drive.setSlideVelocity(1000, drive.slideTop);
-        drive.setExtension(700);
-//where it lets go
-        sleep(1000);
-        drive.setGrip(false);
-        sleep(500);
-//where me and eli need to start
-        */
-
-        for (int i = 5; i > 0; i--) {
+        for (int i = 5; i > 2; i--) {
             toStack(drive, i);
             scoreCone(drive);
         }
@@ -254,7 +186,7 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(1000);
 
         _drive.setSlideVelocity(4000, _drive.slideTop);
-        _drive.setHeight(250 + (stackHeight * 150));
+        _drive.setHeight(50 + (stackHeight * 140));
         _drive.setSlideVelocity(1000, drive.slideTop);
 
 
