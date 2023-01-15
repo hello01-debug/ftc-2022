@@ -1,11 +1,9 @@
-/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
@@ -18,8 +16,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
-@Autonomous(name = "Red Right Score w/ Camera")
-public class redRightScoreCam extends LinearOpMode {
+@Autonomous(name = "RedEXTENDED w/ Camera")
+public class redRightScoreCamEXTENDED extends LinearOpMode {
 
     private final Pose2d startPose = new Pose2d(39, -63, Math.toRadians(90));
     private final Pose2d stackPose = new Pose2d(36, -12, Math.toRadians(90));
@@ -177,6 +175,68 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(1000);
         drive.setGrip(false);
         sleep(500);
+        drive.setExtension(100);
+        drive.setHeight(100);
+        drive.setSlideVelocity(1000, drive.slideLeft, drive.slideRight, drive.slideTop);
+
+        // Update roadrunner's idea of our location after we adjusted it
+        drive.updatePoseEstimate();
+        // Turn around to pick up the next cone
+        drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
+                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(20)
+                )
+                .build()
+        );
+        // Update our pose again
+        drive.updatePoseEstimate();
+
+        // Reach out for the cone from the stack
+        drive.setHeight(750);
+        drive.setExtension(1950);
+        // Wait until grip is in position
+        sleep(1500);
+        // Close grip
+        drive.setGrip(true);
+        // Wait for grip to be fully closed
+        sleep(500);
+
+        // Raise vertical slides to the correct height
+        drive.setHeight(2500);
+        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
+        // Wait until cone is completely off the stack before pulling the horizonal slide in
+        sleep(500);
+        drive.setExtension(0);
+
+        // Turn back around to face the pole
+        drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(135)),
+                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(20)
+                )
+                .build()
+        );
+
+        // Update our position
+        drive.updatePoseEstimate();
+        // Adjust our angle
+        adjustAngle(drive);
+
+        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
+        drive.setHeight(4200);
+        sleep(500);
+        drive.setSlideVelocity(1000, drive.slideTop);
+        drive.setExtension(700);
+//where it lets go
+        sleep(1000);
+        drive.setGrip(false);
+        sleep(500);
+        drive.setSlideVelocity(1000, drive.slideTop);
+        drive.setExtension(0);
+        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
+        drive.setHeight(0);
+        sleep(500);
 //where me and eli need to start
         while (true) {
             if (isStopRequested()) {
@@ -221,4 +281,3 @@ public class redRightScoreCam extends LinearOpMode {
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
     }
 }
-*/
