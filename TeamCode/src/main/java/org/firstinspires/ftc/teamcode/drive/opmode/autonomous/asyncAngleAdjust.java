@@ -13,9 +13,9 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.poleFinder;
-
 @Config
 @Autonomous(group = "testing")
+
 public class asyncAngleAdjust extends LinearOpMode {
     SampleMecanumDrive drive;
     OpenCvWebcam camera = null;
