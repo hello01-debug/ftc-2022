@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.poleFinder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -150,7 +152,7 @@ public class redRightScoreCam extends LinearOpMode {
         // Raise vertical slides to the correct height
         drive.setHeight(2500);
         drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
-        // Wait until cone is completely off the stack before pulling the horizonal slide in
+        // Wait until cone is completely off the stack before pulling the horizontal slide in
         sleep(500);
         drive.setExtension(0);
 
@@ -217,11 +219,11 @@ public class redRightScoreCam extends LinearOpMode {
         }
     }
 
-    private void ToStack(SampleMecanumDrive _drive, new int b ) {
+    private void toStack(SampleMecanumDrive _drive, int b ) {
         //step one
-        drive.setExtension(240);
-        drive.getPoseEstimate()
-        drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+        _drive.setExtension(240);
+        _drive.getPoseEstimate();
+        _drive.followTrajectorySequence(_drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
                         SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(20)
@@ -231,13 +233,45 @@ public class redRightScoreCam extends LinearOpMode {
         //end of step one
         //start of step two
         // the cone height was 8 inches so multiply by 120 all we need is to subtact this by 120 per loop
-        drive.setHeight(960); //Todo: Add in the inerative subtraction
+        _drive.setHeight(960); //Todo: Add in the iterative subtraction
         sleep(1500);
-        drive.setExtension(1950);
+        _drive.setExtension(1950);
         sleep(1000);
-        drive.setGrip(true);
+        _drive.setGrip(true);
         sleep(500);
-        drive.setExtension(240);
+        _drive.setExtension(240);
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
+    }
+
+    private void scoreCone(SampleMecanumDrive _drive) {
+        _drive.updatePoseEstimate();
+        Trajectory reposition = _drive.trajectoryBuilder(_drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(135)),
+                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(20)
+                )
+                .build();
+
+        _drive.setHeight(2500);
+        _drive.setSlideVelocity(1000, _drive.slideLeft, _drive.slideRight);
+
+        sleep(2500);
+
+        adjustAngle(_drive);
+
+        // Increase the slide height to high junction height and increase its velocity //TODO:
+        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
+        drive.setHeight(4200);
+        // Wait until the slides are high enough that we won't hit the pole when extending
+        sleep(500);
+        // Extend the horizontal slide above the pole
+        drive.setSlideVelocity(1000, drive.slideTop);
+        drive.setExtension(750);
+
+        // Wait for arm to be in position
+        sleep(1500);
+
+        // Open grip to drop cone
+        drive.setGrip(false);
     }
 }
