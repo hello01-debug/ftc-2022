@@ -1,4 +1,4 @@
-/*package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
+package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.drive.Drive;
@@ -217,8 +217,27 @@ public class redRightScoreCam extends LinearOpMode {
         }
     }
 
-    private void cycleCone(SampleMecanumDrive _drive) {
+    private void ToStack(SampleMecanumDrive _drive, new int b ) {
+        //step one
+        drive.setExtension(240);
+        drive.getPoseEstimate()
+        drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
+                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(20)
+                )
+                .build()
+        );
+        //end of step one
+        //start of step two
+        // the cone height was 8 inches so multiply by 120 all we need is to subtact this by 120 per loop
+        drive.setHeight(960); //Todo: Add in the inerative subtraction
+        sleep(1500);
+        drive.setExtension(1950);
+        sleep(1000);
+        drive.setGrip(true);
+        sleep(500);
+        drive.setExtension(240);
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
     }
 }
-*/
