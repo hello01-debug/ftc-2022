@@ -234,6 +234,7 @@ public class redRightScoreCam extends LinearOpMode {
         _drive.setExtension(240);
         sleep(2000);
 
+
         _drive.getPoseEstimate();
         _drive.followTrajectorySequence(_drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
@@ -245,15 +246,17 @@ public class redRightScoreCam extends LinearOpMode {
         //end of step one
         //start of step two
         // the cone height was 8 inches so multiply by 120 all we need is to subtact this by 120 per loop
-        _drive.setHeight(360 + (stackHeight * 120));
+        _drive.setHeight(240 + (stackHeight * 100));
         sleep(3000);
         _drive.setExtension(1950);
         sleep(2000);
-        //end of step two
         _drive.setGrip(true);
         sleep(2000);
+        //end of step two
+        //start of step three
         _drive.setHeight(2500);
         sleep(2000);
+        //Start of step four
         _drive.setExtension(960);
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
     }
