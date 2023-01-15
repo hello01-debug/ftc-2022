@@ -112,6 +112,8 @@ public class redRightScoreCam extends LinearOpMode {
         drive.setSlideVelocity(1000, drive.slideTop);
         drive.setExtension(960);
 
+        drive.setExtension(800);
+
         // Wait for arm to be in position
         sleep(1500);
 
@@ -265,13 +267,17 @@ public class redRightScoreCam extends LinearOpMode {
         _drive.updatePoseEstimate();
         Trajectory reposition = _drive.trajectoryBuilder(_drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(135)),
-                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(135), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(20)
                 )
                 .build();
 
+
         _drive.setHeight(2500);
+        _drive.setExtension(0);
         _drive.setSlideVelocity(1000, _drive.slideLeft, _drive.slideRight);
+
+        _drive.followTrajectory(reposition);
 
         sleep(2500);
 
@@ -284,7 +290,7 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(500);
         // Extend the horizontal slide above the pole
         _drive.setSlideVelocity(1000, drive.slideTop);
-        _drive.setExtension(750);
+        _drive.setExtension(850);
 
         // Wait for arm to be in position
         sleep(1500);
