@@ -234,24 +234,24 @@ public class redRightScoreCam extends LinearOpMode {
         // stackHeight is given as height of stack in cones
         //step one
         _drive.setExtension(240);
-        sleep(2000);
+        sleep(1000);
 
+        _drive.setHeight(240 + (stackHeight * 100));
+        sleep(3000);
+        _drive.setExtension(1950);
 
         _drive.getPoseEstimate();
-        _drive.followTrajectorySequence(_drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
+        _drive.followTrajectorySequence
+                (_drive.trajectorySequenceBuilder(
+                        _drive.getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
                         SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(20)
                 )
                 .build()
         );
-        //end of step one
-        //start of step two
-        // the cone height was 8 inches so multiply by 120 all we need is to subtact this by 120 per loop
-        _drive.setHeight(240 + (stackHeight * 100));
-        sleep(3000);
-        _drive.setExtension(1950);
-        sleep(2000);
+
+
         _drive.setGrip(true);
         sleep(2000);
         //end of step two
