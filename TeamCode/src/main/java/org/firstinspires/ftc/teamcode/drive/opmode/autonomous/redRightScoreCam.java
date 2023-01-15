@@ -110,7 +110,7 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(500);
         // Extend the horizontal slide above the pole
         drive.setSlideVelocity(1000, drive.slideTop);
-        drive.setExtension(700);
+        drive.setExtension(960);
 
         // Wait for arm to be in position
         sleep(1500);
@@ -232,6 +232,8 @@ public class redRightScoreCam extends LinearOpMode {
         // stackHeight is given as height of stack in cones
         //step one
         _drive.setExtension(240);
+        sleep(2000);
+
         _drive.getPoseEstimate();
         _drive.followTrajectorySequence(_drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
@@ -244,12 +246,12 @@ public class redRightScoreCam extends LinearOpMode {
         //start of step two
         // the cone height was 8 inches so multiply by 120 all we need is to subtact this by 120 per loop
         _drive.setHeight(360 + (stackHeight * 120));
-        sleep(1500);
+        sleep(3000);
         _drive.setExtension(1950);
-        sleep(1000);
+        sleep(2000);
         _drive.setGrip(true);
-        sleep(500);
-        _drive.setExtension(240);
+        sleep(2000);
+        _drive.setExtension(960);
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
     }
 
