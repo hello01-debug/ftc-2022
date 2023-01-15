@@ -240,11 +240,11 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(3000);
         _drive.setExtension(1950);
 
-        _drive.getPoseEstimate();
+        _drive.updatePoseEstimate();
         _drive.followTrajectorySequence
                 (_drive.trajectorySequenceBuilder(
                         _drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(40, -10, Math.toRadians(0)),
+                        .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(0)),
                         SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(40), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(20)
                 )
@@ -265,11 +265,8 @@ public class redRightScoreCam extends LinearOpMode {
 
     private void scoreCone(SampleMecanumDrive _drive) {
         _drive.updatePoseEstimate();
-        Trajectory reposition = _drive.trajectoryBuilder(_drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(36, -12, Math.toRadians(135)),
-                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(135), DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(20)
-                )
+        TrajectorySequence reposition = _drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
+                .turn(Math.toRadians(135), Math.toRadians(60), Math.toRadians(60))
                 .build();
 
 
@@ -277,7 +274,7 @@ public class redRightScoreCam extends LinearOpMode {
         _drive.setExtension(0);
         _drive.setSlideVelocity(1000, _drive.slideLeft, _drive.slideRight);
 
-        _drive.followTrajectory(reposition);
+        _drive.followTrajectorySequence(reposition);
 
         sleep(2500);
 
