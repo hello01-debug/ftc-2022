@@ -121,6 +121,8 @@ public class redRightScoreCam extends LinearOpMode {
         // Wait for grip to fully open and cone to drop
         sleep(500);
 
+        /*
+
         // Drop and retract slides to cycle the next cone
         drive.setExtension(100);
         drive.setHeight(100);
@@ -180,6 +182,13 @@ public class redRightScoreCam extends LinearOpMode {
         drive.setGrip(false);
         sleep(500);
 //where me and eli need to start
+        */
+
+        for (int i = 5; i > 3; i--) {
+            toStack(drive, i);
+            scoreCone(drive);
+        }
+
         while (true) {
             if (isStopRequested()) {
                 break;
