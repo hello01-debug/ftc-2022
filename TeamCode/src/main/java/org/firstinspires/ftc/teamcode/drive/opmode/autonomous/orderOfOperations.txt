@@ -1,6 +1,3 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.autonomous;
-
-/*
 Move to end pos and face poll
 
 Starts loop
@@ -26,4 +23,3 @@ Adjust angle (might not need)
 Raise slides
 Extend slide
 Open Grip
-*/
