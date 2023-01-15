@@ -251,7 +251,10 @@ public class redRightScoreCam extends LinearOpMode {
         sleep(3000);
         _drive.setExtension(1950);
         sleep(2000);
+        //end of step two
         _drive.setGrip(true);
+        sleep(2000);
+        _drive.setHeight(2500);
         sleep(2000);
         _drive.setExtension(960);
         // This function will start at the end of one cycle, turn around, grab a cone, and put it on the pole
