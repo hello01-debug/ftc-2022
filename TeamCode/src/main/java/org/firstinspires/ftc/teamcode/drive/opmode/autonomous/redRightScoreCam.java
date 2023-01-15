@@ -219,7 +219,8 @@ public class redRightScoreCam extends LinearOpMode {
         }
     }
 
-    private void toStack(SampleMecanumDrive _drive, int b ) {
+    private void toStack(SampleMecanumDrive _drive, int stackHeight ) {
+        // stackHeight is given as height of stack in cones
         //step one
         _drive.setExtension(240);
         _drive.getPoseEstimate();
@@ -233,7 +234,7 @@ public class redRightScoreCam extends LinearOpMode {
         //end of step one
         //start of step two
         // the cone height was 8 inches so multiply by 120 all we need is to subtact this by 120 per loop
-        _drive.setHeight(960); //Todo: Add in the iterative subtraction
+        _drive.setHeight(360 + (stackHeight * 120));
         sleep(1500);
         _drive.setExtension(1950);
         sleep(1000);
@@ -260,18 +261,18 @@ public class redRightScoreCam extends LinearOpMode {
         adjustAngle(_drive);
 
         // Increase the slide height to high junction height and increase its velocity //TODO:
-        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
-        drive.setHeight(4200);
+        _drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
+        _drive.setHeight(4200);
         // Wait until the slides are high enough that we won't hit the pole when extending
         sleep(500);
         // Extend the horizontal slide above the pole
-        drive.setSlideVelocity(1000, drive.slideTop);
-        drive.setExtension(750);
+        _drive.setSlideVelocity(1000, drive.slideTop);
+        _drive.setExtension(750);
 
         // Wait for arm to be in position
         sleep(1500);
 
         // Open grip to drop cone
-        drive.setGrip(false);
+        _drive.setGrip(false);
     }
 }
