@@ -20,7 +20,7 @@ public class sawyerCamera extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "camera");
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -33,5 +33,9 @@ public class sawyerCamera extends LinearOpMode {
                 // idk yet
             }
         });
+
+        waitForStart();
+
+        camera.stopStreaming();
     }
 }

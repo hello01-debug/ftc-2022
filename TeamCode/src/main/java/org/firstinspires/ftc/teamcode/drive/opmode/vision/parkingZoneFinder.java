@@ -34,7 +34,7 @@ public class parkingZoneFinder extends OpenCvPipeline {
 
     private Mat output = new Mat();
 
-    private final Rect targetArea = new Rect(300, 440, 280, 280);
+    private final Rect targetArea = new Rect(640, 400, 220, 300);
 
     private int zoneNumber = -1;
 

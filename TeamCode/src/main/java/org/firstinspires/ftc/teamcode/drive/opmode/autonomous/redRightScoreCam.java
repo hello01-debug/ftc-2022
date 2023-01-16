@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.poleFinder;
+import org.firstinspires.ftc.teamcode.drive.opmode.vision.parkingZoneFinder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -28,20 +29,24 @@ public class redRightScoreCam extends LinearOpMode {
     private final Pose2d startPose = new Pose2d(36, -64, Math.toRadians(180));
     private final Pose2d interPose = new Pose2d(36, -24, Math.toRadians(180));
     private final Pose2d scorePose = new Pose2d(38, -10, Math.toRadians(133));
-    private final Pose2d cyclePose = new Pose2d(30, -10, Math.toRadians(131));
+    private final Pose2d cyclePose = new Pose2d(30, -10, Math.toRadians(133));
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
 
     private final double travelSpeed = 45.0, travelAccel = 30.0;
     private final double adjustmentSpeed = 1.5, adjustmentAccel = 1.5;
     private final double angVel = Math.toRadians(120), adjustAngVel = Math.toRadians(20);
 
+    private Pose2d[] parkingSpots = {new Pose2d(12, -12, Math.toRadians(0)), new Pose2d(36, -12, Math.toRadians(0)), new Pose2d(60, -12, Math.toRadians(0))};
+
     private final int width = 1280, height = 720, slices = 64;
 
     SampleMecanumDrive drive;
-    OpenCvWebcam camera = null;
+    OpenCvWebcam adjustCamera = null, signalCamera = null;
     // poleFinder poleFinderPipeline = new poleFinder(width, height, slices);
     poleFinder poleFinderPipeline = new poleFinder();
     poleFinder.poleLocation moveDir;
+    parkingZoneFinder parkingZonePipeline = new parkingZoneFinder();
+    parkingZoneFinder.parkingZone zone;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -68,18 +73,21 @@ public class redRightScoreCam extends LinearOpMode {
 
 
         // Set up the webcam
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "camera");
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+        WebcamName adjustCameraName = hardwareMap.get(WebcamName.class, "adjustCamera");
+        WebcamName signalCameraName = hardwareMap.get(WebcamName.class, "signalCamera");
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        adjustCamera = OpenCvCameraFactory.getInstance().createWebcam(adjustCameraName);
+        signalCamera = OpenCvCameraFactory.getInstance().createWebcam(signalCameraName);
 
         // Set the camera's pipeline
-        camera.setPipeline(poleFinderPipeline);
+        adjustCamera.setPipeline(poleFinderPipeline);
+        signalCamera.setPipeline(parkingZonePipeline);
 
         // Open the camera
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+        adjustCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                camera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+                adjustCamera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -88,7 +96,28 @@ public class redRightScoreCam extends LinearOpMode {
             }
         });
 
-        waitForStart();
+        signalCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                signalCamera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+
+        while (!isStarted()) {
+            zone = parkingZonePipeline.getParkingZone();
+            telemetry.addData("Parking Zone", zone);
+            telemetry.update();
+        }
+
+        signalCamera.stopStreaming();
+        signalCamera.closeCameraDevice();
+
+        //waitForStart();
 
         // Close the grip and move the slide up a small amount
         drive.setGrip(true);
@@ -139,6 +168,10 @@ public class redRightScoreCam extends LinearOpMode {
             toStack(drive, i);
             scoreCone(drive);
         }
+
+        if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
+        else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
+        else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
 
         while (true) {
             if (isStopRequested()) {
@@ -245,5 +278,21 @@ public class redRightScoreCam extends LinearOpMode {
         // Open grip to drop cone
         _drive.setGrip(false);
         sleep(500);
+    }
+
+    private void parkBot(SampleMecanumDrive _drive, int _zone, Pose2d[] locations) {
+        _drive.updatePoseEstimate();
+        Trajectory moveToPark = _drive.trajectoryBuilder(_drive.getPoseEstimate())
+                .lineToLinearHeading(locations[_zone])
+                .build();
+
+        _drive.setGrip(false);
+        _drive.setExtension(50);
+        _drive.setHeight(4400);
+        _drive.setSlideVelocity(4000, _drive.slideLeft, _drive.slideRight, _drive.slideTop);
+
+        _drive.followTrajectory(moveToPark);
+
+        _drive.setHeight(100);
     }
 }
