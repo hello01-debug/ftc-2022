@@ -26,9 +26,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous(name = "Red Right Score w/ Camera")
 public class redRightScoreCam extends LinearOpMode {
 
-    private final Pose2d startPose = new Pose2d(36, -64, Math.toRadians(180));
+    private final Pose2d startPose = new Pose2d(36, -63, Math.toRadians(90));
     private final Pose2d interPose = new Pose2d(36, -24, Math.toRadians(180));
-    private final Pose2d scorePose = new Pose2d(38, -10, Math.toRadians(180));
+    private final Pose2d scorePose = new Pose2d(38, -10, Math.toRadians(133));
     private final Pose2d cyclePose = new Pose2d(30, -10, Math.toRadians(133));
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
 
@@ -64,11 +64,10 @@ public class redRightScoreCam extends LinearOpMode {
                 .addSpatialMarker(new Vector2d(36, -24), () -> {
                     drive.setHeight(2500);
                 })
-                .lineToLinearHeading(scorePose,
+                .lineToSplineHeading(scorePose,
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
-                .turn(Math.toRadians(-47), Math.toRadians(120), Math.toRadians(60))
                 .build();
 
 
@@ -81,7 +80,7 @@ public class redRightScoreCam extends LinearOpMode {
         signalCamera = OpenCvCameraFactory.getInstance().createWebcam(signalCameraName);
 
         // Set the camera's pipeline
-        adjustCamera.setPipeline(poleFinderPipeline);
+        adjustCamera.setPipeline(parkingZonePipeline);
         signalCamera.setPipeline(parkingZonePipeline);
 
         // Open the camera
@@ -117,6 +116,7 @@ public class redRightScoreCam extends LinearOpMode {
 
         signalCamera.stopStreaming();
         signalCamera.closeCameraDevice();
+        adjustCamera.setPipeline(poleFinderPipeline);
 
         //waitForStart();
 
@@ -174,10 +174,11 @@ public class redRightScoreCam extends LinearOpMode {
         if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
+        else { parkBot(drive, 1, parkingSpots); }
     }
 
     private void adjustAngle(SampleMecanumDrive _drive) {
-        double degrees = 2.0;
+        double degrees = 3.0;
         int tries = 1;
         poleFinder.poleLocation prev = poleFinder.poleLocation.ALIGNED;
 
@@ -185,11 +186,11 @@ public class redRightScoreCam extends LinearOpMode {
             moveDir = poleFinderPipeline.getLocation();
             if (moveDir == poleFinder.poleLocation.LEFT) {
                 if (prev == moveDir) {
-                    tries -= 1;
+                    tries -= 3;
                     degrees -= 1.0;
                 }
                 _drive.followTrajectorySequence(_drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
-                        .turn(Math.toRadians(degrees))
+                        .turn(Math.toRadians(degrees), Math.toRadians(30.0), Math.toRadians(10.0))
                         .build());
                 prev = poleFinder.poleLocation.LEFT;
             } else if (moveDir == poleFinder.poleLocation.RIGHT) {
@@ -198,7 +199,7 @@ public class redRightScoreCam extends LinearOpMode {
                     degrees -= 1.0;
                 }
                 _drive.followTrajectorySequence(_drive.trajectorySequenceBuilder(_drive.getPoseEstimate())
-                        .turn(Math.toRadians(-degrees))
+                        .turn(Math.toRadians(-degrees), Math.toRadians(30.0), Math.toRadians(10.0))
                         .build());
                 prev = poleFinder.poleLocation.RIGHT;
             }
@@ -223,14 +224,14 @@ public class redRightScoreCam extends LinearOpMode {
         _drive.followTrajectorySequence
                 (_drive.trajectorySequenceBuilder(
                         scorePose)
-                        .lineToLinearHeading(stackPose,
+                        .lineToSplineHeading(stackPose,
                         SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(120), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(20)
                 )
                 .build()
         );
 
-        _drive.setExtension(1950);
+        _drive.setExtension(2000);
         _drive.setSlideVelocity(2000, _drive.slideTop );
         sleep(1250);
         _drive.setGrip(true);

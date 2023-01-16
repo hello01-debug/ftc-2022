@@ -13,9 +13,9 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.firstinspires.ftc.teamcode.drive.opmode.vision.poleFinder;
+
 @Config
 @Autonomous(group = "testing")
-
 public class asyncAngleAdjust extends LinearOpMode {
     SampleMecanumDrive drive;
     OpenCvWebcam camera = null;
@@ -36,14 +36,11 @@ public class asyncAngleAdjust extends LinearOpMode {
             @Override
             public void onOpened() {
                 camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-                telemetry.addLine("camera ready");
-                telemetry.update();
             }
 
             @Override
             public void onError(int errorCode) {
-                telemetry.addData("camera error", errorCode);
-                telemetry.update();
+
             }
         });
 
@@ -59,7 +56,7 @@ public class asyncAngleAdjust extends LinearOpMode {
         double maxAngVel = Math.toRadians(20.0);
         double maxAngAccel = Math.toRadians(10.0);
         moveDir = poleFinderPipeline.getLocation();
-        poleFinder.poleLocation otherDir = poleFinder.poleLocation.ALIGNED;
+        poleFinder.poleLocation prevDir = moveDir;
 
         TrajectorySequence turnLeft = drive.trajectorySequenceBuilder(new Pose2d())
                 .turn(Math.toRadians(45), maxAngVel, maxAngAccel)
@@ -73,14 +70,7 @@ public class asyncAngleAdjust extends LinearOpMode {
                 .turn(Math.toRadians(0), maxAngVel, maxAngAccel)
                 .build();
 
-
-        if ((moveDir == poleFinder.poleLocation.LEFT) && (moveDir != poleFinder.poleLocation.RIGHT))
-         { otherDir = poleFinder.poleLocation.RIGHT; }
-        else if ((moveDir == poleFinder.poleLocation.RIGHT) && (moveDir != poleFinder.poleLocation.LEFT) )
-         { otherDir = poleFinder.poleLocation.LEFT; }
-
-
-        if (moveDir == poleFinder.poleLocation.ALIGNED ) {
+        if (moveDir == poleFinder.poleLocation.ALIGNED) {
             return;
         } else if (moveDir == poleFinder.poleLocation.LEFT) {
             _drive.followTrajectorySequenceAsync(turnLeft);
@@ -88,28 +78,13 @@ public class asyncAngleAdjust extends LinearOpMode {
             _drive.followTrajectorySequenceAsync(turnRight);
         }
 
-        while (moveDir != poleFinder.poleLocation.ALIGNED) {
+        while (moveDir == poleFinder.poleLocation.RIGHT) {
             _drive.update();
-            if (poleFinderPipeline.getLocation() == otherDir) {
-                telemetry.addLine("skipping");
-                telemetry.update();
-                break;
-            }
             moveDir = poleFinderPipeline.getLocation();
-            telemetry.addData("", moveDir);
-            telemetry.update();
-
-            //this is just to stop a loop from our button
-            if (isStopRequested()) {
-                break;
-            }
         }
 
         _drive.followTrajectorySequenceAsync(doNothing);
         _drive.update();
-
-        telemetry.addLine("done");
-        telemetry.update();
 
         return;
 
