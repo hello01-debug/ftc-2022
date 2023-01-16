@@ -26,7 +26,7 @@ public class asyncAngleAdjust extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
 
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, "camera");
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, "adjustCamera");
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
@@ -59,7 +59,7 @@ public class asyncAngleAdjust extends LinearOpMode {
         double maxAngVel = Math.toRadians(20.0);
         double maxAngAccel = Math.toRadians(10.0);
         moveDir = poleFinderPipeline.getLocation();
-        poleFinder.poleLocation prevDir = moveDir;
+        poleFinder.poleLocation otherDir = poleFinder.poleLocation.ALIGNED;
 
         TrajectorySequence turnLeft = drive.trajectorySequenceBuilder(new Pose2d())
                 .turn(Math.toRadians(45), maxAngVel, maxAngAccel)
@@ -73,7 +73,14 @@ public class asyncAngleAdjust extends LinearOpMode {
                 .turn(Math.toRadians(0), maxAngVel, maxAngAccel)
                 .build();
 
-        if (moveDir == poleFinder.poleLocation.ALIGNED) {
+
+        if ((moveDir == poleFinder.poleLocation.LEFT) && (moveDir != poleFinder.poleLocation.RIGHT))
+         { otherDir = poleFinder.poleLocation.RIGHT; }
+        else if ((moveDir == poleFinder.poleLocation.RIGHT) && (moveDir != poleFinder.poleLocation.LEFT) )
+         { otherDir = poleFinder.poleLocation.LEFT; }
+
+
+        if (moveDir == poleFinder.poleLocation.ALIGNED ) {
             return;
         } else if (moveDir == poleFinder.poleLocation.LEFT) {
             _drive.followTrajectorySequenceAsync(turnLeft);
@@ -83,10 +90,19 @@ public class asyncAngleAdjust extends LinearOpMode {
 
         while (moveDir != poleFinder.poleLocation.ALIGNED) {
             _drive.update();
+            if (poleFinderPipeline.getLocation() == otherDir) {
+                telemetry.addLine("skipping");
+                telemetry.update();
+                break;
+            }
             moveDir = poleFinderPipeline.getLocation();
             telemetry.addData("", moveDir);
             telemetry.update();
-            if (isStopRequested()) { break; }
+
+            //this is just to stop a loop from our button
+            if (isStopRequested()) {
+                break;
+            }
         }
 
         _drive.followTrajectorySequenceAsync(doNothing);

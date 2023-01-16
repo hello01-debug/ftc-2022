@@ -114,8 +114,20 @@ public class poleFinder extends OpenCvPipeline {
     }
 
     public poleLocation getLocation() {
+        int totalYellow = 0;
         int targetIndex = slices / 2;
         int left = 0, right = 0;
+
+        for (int i = 0; i < slices; i++) {
+            if (isYellow[i]) {
+                totalYellow++;
+            }
+
+        }
+
+        if (totalYellow == 0) {
+            return poleLocation.ALIGNED;
+        }
 
         if (isYellow[targetIndex - 2] && isYellow[targetIndex - 1] && isYellow[targetIndex] && isYellow[targetIndex + 1]) {
             return poleLocation.ALIGNED;

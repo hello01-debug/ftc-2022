@@ -28,7 +28,7 @@ public class redRightScoreCam extends LinearOpMode {
 
     private final Pose2d startPose = new Pose2d(36, -64, Math.toRadians(180));
     private final Pose2d interPose = new Pose2d(36, -24, Math.toRadians(180));
-    private final Pose2d scorePose = new Pose2d(38, -10, Math.toRadians(133));
+    private final Pose2d scorePose = new Pose2d(38, -10, Math.toRadians(180));
     private final Pose2d cyclePose = new Pose2d(30, -10, Math.toRadians(133));
     private final Pose2d stackPose = new Pose2d(40, -10, Math.toRadians(5));
 
@@ -36,7 +36,7 @@ public class redRightScoreCam extends LinearOpMode {
     private final double adjustmentSpeed = 1.5, adjustmentAccel = 1.5;
     private final double angVel = Math.toRadians(120), adjustAngVel = Math.toRadians(20);
 
-    private Pose2d[] parkingSpots = {new Pose2d(12, -12, Math.toRadians(0)), new Pose2d(36, -12, Math.toRadians(0)), new Pose2d(60, -12, Math.toRadians(0))};
+    private Pose2d[] parkingSpots = {new Pose2d(12, -12, Math.toRadians(180)), new Pose2d(36, -12, Math.toRadians(180)), new Pose2d(60, -12, Math.toRadians(180))};
 
     private final int width = 1280, height = 720, slices = 64;
 
@@ -68,6 +68,7 @@ public class redRightScoreCam extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(travelSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(travelAccel)
                 )
+                .turn(Math.toRadians(-47), Math.toRadians(120), Math.toRadians(60))
                 .build();
 
 
@@ -142,6 +143,7 @@ public class redRightScoreCam extends LinearOpMode {
         // Update roadrunner's idea of where the robot is after we ran the trajectory
         drive.updatePoseEstimate();
         // Adjust our angle so that we are lined up with the pole
+        sleep(250); // Wait for wiggles to stop just in case
         adjustAngle(drive);
 
         // Increase the slide height to high junction height and increase its velocity //TODO:
@@ -172,12 +174,6 @@ public class redRightScoreCam extends LinearOpMode {
         if (zone == parkingZoneFinder.parkingZone.ZONE1) { parkBot(drive, 0, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE2) { parkBot(drive, 1, parkingSpots); }
         else if (zone == parkingZoneFinder.parkingZone.ZONE3) { parkBot(drive, 2, parkingSpots); }
-
-        while (true) {
-            if (isStopRequested()) {
-                break;
-            }
-        }
     }
 
     private void adjustAngle(SampleMecanumDrive _drive) {
@@ -261,6 +257,7 @@ public class redRightScoreCam extends LinearOpMode {
 
         _drive.followTrajectorySequence(reposition);
 
+        sleep(250); // Wait for wiggles to stop just in case
         adjustAngle(_drive);
 
         // Increase the slide height to high junction height and increase its velocity //TODO:
