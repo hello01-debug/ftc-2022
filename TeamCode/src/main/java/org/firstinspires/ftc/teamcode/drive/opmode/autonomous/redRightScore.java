@@ -227,8 +227,6 @@ public class redRightScore extends LinearOpMode {
 
         _drive.followTrajectorySequence(reposition);
 
-        _drive.setHeight(4100);
-
         _drive.setExtension(750); // Wait for wiggles to stop just in case
 
         // Increase the slide height to high junction height and increase its velocity //TODO:
