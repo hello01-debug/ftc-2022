@@ -9,10 +9,10 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
  * This is a simple routine to test turning capabilities.
- */
+ */ 
 @Config
-@Disabled
-@Autonomous(group = "drive")
+//@Disabled
+@Autonomous(group = "tuning")
 public class TurnTest extends LinearOpMode {
     public static double ANGLE = 90; // deg
 

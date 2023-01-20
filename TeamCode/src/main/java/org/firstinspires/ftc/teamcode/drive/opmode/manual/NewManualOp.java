@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.opmode.Controller;
 import org.firstinspires.ftc.teamcode.drive.opmode.Robot;
 
-@TeleOp(name = "Manual Op")
+@TeleOp(name = "ManualOp")
 public class NewManualOp extends OpMode {
     // Create new robot and controller objects from the classes we defined
     private Robot robot;

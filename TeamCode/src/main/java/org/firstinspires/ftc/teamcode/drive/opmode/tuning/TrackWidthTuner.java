@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * accurate track width estimate is important or else the angular constraints will be thrown off.
  */
 @Config
-@Disabled
-@Autonomous(group = "drive")
+//@Disabled
+@Autonomous(group = "tuning")
 public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
