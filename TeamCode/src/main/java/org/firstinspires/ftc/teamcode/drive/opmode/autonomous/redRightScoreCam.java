@@ -36,7 +36,7 @@ public class redRightScoreCam extends LinearOpMode {
     private final double adjustmentSpeed = 1.5, adjustmentAccel = 1.5;
     private final double angVel = Math.toRadians(120), adjustAngVel = Math.toRadians(20);
 
-    private Pose2d[] parkingSpots = {new Pose2d(12, -12, Math.toRadians(90)), new Pose2d(36, -12, Math.toRadians(90)), new Pose2d(60, -12, Math.toRadians(90))};
+    private Pose2d[] parkingSpots = {new Pose2d(12, -12, Math.toRadians(180)), new Pose2d(36, -12, Math.toRadians(180)), new Pose2d(60, -12, Math.toRadians(180))};
 
     private final int width = 1280, height = 720, slices = 64;
 
@@ -120,19 +120,19 @@ public class redRightScoreCam extends LinearOpMode {
 
         //waitForStart();
 
-        drive.setSlideVelocity(4000, drive.slideRight, drive.slideLeft, drive.slideTop);
-
         // Close the grip and move the slide up a small amount
         drive.setGrip(true);
         sleep(250);
         drive.setHeight(200);
         drive.setExtension(50);
+        drive.setSlideVelocity(400, drive.slideLeft, drive.slideRight);
 
         // The sleep is necessary to wait for certain arm actions to finish
         sleep(250);
 
         // Increase the height of the slide and increase its velocity
         drive.setHeight(3200);
+        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
 
         drive.followTrajectorySequence(goToStack);
 
@@ -147,10 +147,13 @@ public class redRightScoreCam extends LinearOpMode {
         adjustAngle(drive);
 
         // Increase the slide height to high junction height and increase its velocity //TODO:
+        drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
         drive.setHeight(4200);
         // Wait until the slides are high enough that we won't hit the pole when extending
         sleep(500);
         // Extend the horizontal slide above the pole
+        drive.setSlideVelocity(1000, drive.slideTop);
+        drive.setExtension(960);
 
         drive.setExtension(825);
 
@@ -212,7 +215,9 @@ public class redRightScoreCam extends LinearOpMode {
         _drive.setExtension(240);
         sleep(1000);
 
+        _drive.setSlideVelocity(4000, _drive.slideTop);
         _drive.setHeight(50 + (stackHeight * 140));
+        _drive.setSlideVelocity(1000, drive.slideTop);
 
 
         _drive.updatePoseEstimate();
@@ -220,13 +225,14 @@ public class redRightScoreCam extends LinearOpMode {
                 (_drive.trajectorySequenceBuilder(
                         scorePose)
                         .lineToSplineHeading(stackPose,
-                        SampleMecanumDrive.getVelocityConstraint(45, Math.toRadians(120), DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(35)
+                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(120), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(20)
                 )
                 .build()
         );
 
         _drive.setExtension(2000);
+        _drive.setSlideVelocity(2000, _drive.slideTop );
         sleep(1250);
         _drive.setGrip(true);
         sleep(500);
@@ -242,12 +248,13 @@ public class redRightScoreCam extends LinearOpMode {
     private void scoreCone(SampleMecanumDrive _drive) {
         _drive.updatePoseEstimate();
         TrajectorySequence reposition = _drive.trajectorySequenceBuilder(stackPose)
-                .turn(Math.toRadians(133), Math.toRadians(120), Math.toRadians(90))
+                .turn(Math.toRadians(133), Math.toRadians(120), Math.toRadians(60))
                 .build();
 
 
         _drive.setHeight(2500);
         _drive.setExtension(50);
+        _drive.setSlideVelocity(1000, _drive.slideLeft, _drive.slideRight);
 
         _drive.followTrajectorySequence(reposition);
 
@@ -255,10 +262,12 @@ public class redRightScoreCam extends LinearOpMode {
         adjustAngle(_drive);
 
         // Increase the slide height to high junction height and increase its velocity //TODO:
+        _drive.setSlideVelocity(2000, drive.slideLeft, drive.slideRight);
         _drive.setHeight(4200);
         // Wait until the slides are high enough that we won't hit the pole when extending
         sleep(500);
         // Extend the horizontal slide above the pole
+        _drive.setSlideVelocity(1000, drive.slideTop);
         _drive.setExtension(850);
 
         // Wait for arm to be in position
@@ -278,6 +287,7 @@ public class redRightScoreCam extends LinearOpMode {
         _drive.setGrip(false);
         _drive.setExtension(50);
         _drive.setHeight(4400);
+        _drive.setSlideVelocity(4000, _drive.slideLeft, _drive.slideRight, _drive.slideTop);
 
         _drive.followTrajectory(moveToPark);
 
